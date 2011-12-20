@@ -66,7 +66,9 @@ Quick Start for Running your own DropShare
   0. Install `redis`. See Appendix (below) for installing redis on OS X.
   0. Install [Spark](https://github.com/senchalabs/spark), `jade`, and `less` with `npm install -g spark jade less`.
   0. Install [Spark](https://github.com/senchalabs/spark), `jade`, [Pakmanager](https://github.com/coolaj86/node-pakmanager), and `less`.
+
         npm install -g spark jade less pakmanager
+
   0. Copy `config.default.js` to `config.js`, and customize any server
      settings you would like.
   0. Run `cd public; ./deploy.sh` to compile the static assets.
