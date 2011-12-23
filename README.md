@@ -16,6 +16,7 @@ Similar services include
   * [kicksend](http://kicksend.com/)
   * [sendoid](http://sendoid.com/)
   * [shareDesk](http://sharedesk.at) [[fork on github](https://github.com/eeezyy/shareDesk)]
+  * [CloudApp](http://getcloudapp.com/)
 
 Clients
 ===
