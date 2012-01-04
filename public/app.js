@@ -43,7 +43,7 @@
       $('ul#uploadlist').append(link);
     });
 
-    request.post('/files/new', {}, meta).when(function (err, ahr, data) {
+    request.post(location.pathname + 'files/new', {}, meta).when(function (err, ahr, data) {
       var formData = new FormData()
         ;
 
@@ -79,7 +79,7 @@
       // "global" upload queue
       sequence.then(function (next) {
         var emitter;
-        emitter = request.post('/files', {}, formData);
+        emitter = request.post(location.pathname + 'files', {}, formData);
         emitter.when(function (err, ahr, data2) {
           console.log('data at data2', data);
           data.forEach(function (token, k) {
@@ -195,7 +195,7 @@
       return;
     }
 
-    request.delete(location.protocol + '//' + location.host + '/files/' + id).when(function (err, ahr, data) {
+    request.delete(location.protocol + '//' + location.host + location.pathname + 'files/' + id).when(function (err, ahr, data) {
       console.log('prolly deleted:', err, ahr, data);
       $(self).closest('li').remove();
       if (!$('ul#uploadlist li').length) {
@@ -241,17 +241,17 @@
     console.log(resource);
     var id = resource[0]
       , name = resource[1] || 'stream.bin'
-      , url = location.protocol + '//' + location.host + '/files/' + id + '/' + name
+      , url = location.protocol + '//' + location.host + location.pathname + 'files/' + id + '/' + name
       , type = 'application/octet-stream'
       ;
 
-    request.get('/meta/' + id).when(function (err, ahr, data) {
+    request.get(location.pathname + 'meta/' + id).when(function (err, ahr, data) {
       if (!data || !data.success) {
         alert('Sad day! Looks like a bad link.');
         return;
       }
 
-      url = location.protocol + '//' + location.host + '/files/' + id + '/' + data.result.name
+      url = location.protocol + '//' + location.host + location.pathname + 'files/' + id + '/' + data.result.name
       $('a.dnd').attr('href', url);
       $('a.dnd').attr('data-downloadurl', type + ':' + decodeURIComponent(name) + ':' + url);
       $('#loading').hide();
