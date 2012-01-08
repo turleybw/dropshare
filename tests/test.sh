@@ -22,7 +22,6 @@ expect_not_equal () {
 # start the server
 spark -C .. > /dev/null 2>&1 &
 PID=$!
-echo $PID
 sleep 1
 
 HOST="http://localhost:3700"
