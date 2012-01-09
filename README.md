@@ -1,7 +1,22 @@
 Dropshare
 ===
 
-[DropShare](http://dropsha.re) is a shameless [ge.tt](http://ge.tt) / [min.us](http://min.us) clone. [droplr](http://droplr.com) is also similar.
+[DropShare](http://dropsha.re) is the answer to the age-old question of File Transfer:
+
+[![File Transfer][file-transfer]][xkcd-949]
+
+[xkcd-949]: http://xkcd.com/949/
+[file-transfer]: http://imgs.xkcd.com/comics/file_transfer.png "Every time you email a file to yourself so you can pull it up on your friend's laptop, Tim Berners-Lee sheds a single tear."
+
+Similar services include
+
+  * [ge.tt](http://ge.tt)
+  * [min.us](http://min.us)
+  * [droplr](http://droplr.com)
+  * [kicksend](http://kicksend.com/)
+  * [sendoid](http://sendoid.com/)
+  * [shareDesk](http://sharedesk.at) [[fork on github](https://github.com/eeezyy/shareDesk)]
+  * [CloudApp](http://getcloudapp.com/)
 
 Clients
 ===
@@ -13,7 +28,7 @@ Web
 
 With the web-client you can drag-n-drop or use the normal upload/download.
 
-    [http://dropsha.re](http://dropsha.re)
+[http://dropsha.re](http://dropsha.re)
 
 Bash
 ---
@@ -50,11 +65,24 @@ Quick Start for Running your own DropShare
 ---
 
   0. Install `redis`. See Appendix (below) for installing redis on OS X.
-  0. Install [Spark](https://github.com/senchalabs/spark) with `npm install -g spark`.
+  0. Install [Spark](https://github.com/senchalabs/spark), `jade`, and `less` with `npm install -g spark jade less`.
+  0. Install [Spark](https://github.com/senchalabs/spark), `jade`, [Pakmanager](https://github.com/coolaj86/node-pakmanager), and `less`.
+
+        npm install -g spark jade less pakmanager
+
   0. Copy `config.default.js` to `config.js`, and customize any server
      settings you would like.
   0. Run `cd public; ./deploy.sh` to compile the static assets.
   0. Start the server with `spark`. By default it runs on port 3700.
+
+Quick Recap
+
+    brew install redis || apt-get install redis
+    npm install -g spark jade less pakmanager
+    cp config.defaults.js config.js
+    open -a TextEdit config.js || gnome-open config.js
+    cd public; ./deploy.sh
+    spark
 
 Running Tests
 ---
