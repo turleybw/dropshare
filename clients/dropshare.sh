@@ -47,6 +47,9 @@ RESULT=`curl --silent "${HOST}/files/new"  -X POST \
 # ex: ["p2Oo6f8"]
 ID=`echo ${RESULT} | cut -d'"' -f2`
 
+echo "Uploading to 'http://api.dropsha.re/files/${ID}/${FILE_NAME}'"
+echo ""
+
 # TODO 
 RESPONSE=`curl --silent --progress-bar "${HOST}/files"  -X POST \
   --form ${ID}=@"${FILE}"`
