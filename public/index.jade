@@ -33,7 +33,7 @@ html
         //- this needs to be first for google indexing
         #howitworks.uiview.howitworks
           header.section How It Works
-          a(href='http://xkcd.com/949/' target='_blank')
+          a(href='http://xkcd.com/949/',target='_blank')
             img(src='http://imgs.xkcd.com/comics/file_transfer.png'
               , alt='File Transfer'
               , title="Every time you email a file to yourself so you can pull it up on your friend's laptop, Tim Berners-Lee sheds a single tear.")
@@ -49,46 +49,7 @@ html
                 | WebDesignerWall: CSS Buttons
           | 'Nuff said.
 
-        #drop.uiview.drop.index
-          #drop-container
-            header Drop
-            #dropzone.tall.file-zone.area.interactive
-              //- http://www.softicons.com/free-icons/web-icons/design-cartons-icons-by-sneh-roy/box-drag-and-drop-icon
-              img#drop-action-image(src='images/drag-n-drop-box.png',alt='Drag & Drop Files from your Desktop')
-              //- TODO find out why this is laggy when placed outside of #dropzone
-              form#upload.upload
-                //- webkitdirectory allows ONLY directories
-                //- input#filechooser.filechooser(name='file',type='file',multiple='multiple')
-            #uploadzone.short.file-zone.area.interactive
-              button#upload.button.gray Open File Browser
-              form.upload
-                //- input.filechooser(name='file',type='file',multiple='multiple')
-          #share-container
-            header Share
-            .short.area.interactive
-              //- http://www.iconseeker.com/search/SHARE/2
-              //-img(src='images/share-with-friends.png',style='width: 48px; display: inline;')
-              span.draw-attention Copy and Share these:
-            .tall.area.interactive
-              #no-links
-                | As you select files to share, the links will appear here.
-              //- TODO http://www.nikesh.me/demo/loading.html
-              //- http://jimpunk.net/Loading/?page_id=9
-              //-img#loading-large(src='images/loading-large.gif')
-              //- http://new.rogers.com/web/resources/images/wireless/loading.gif
-              //- http://images.wordpressapi.com/loading.gif
-              ul#uploadlist.tabs
-                li.tab.file-info
-                  span.id TPL-TOKEN
-                  span.name TPL-NAME
-                  a(href='#/share/TPL-TOKEN') domain.tld/#/share/TPL-TOKEN
-                  span.remove-file X
-                  progress
-                    span.val 0
-                    span.div /
-                    span.max 0
-          .clear
-          #delete-notice Files are deleted after 3 days.
+        include includes/drop.jade
 
         #share.uiview.share
           header.section Your file, Sir!
@@ -134,70 +95,70 @@ html
           h3 CREATE meta data to retrieve ids
           pre
             code
-              # request
-              curl dropsha.re/meta/new \
-                -X POST -H 'application/json' \
-                -d '[
-                        {
-                            "name": "logo.png"
-                          , "path": "/home/user/images/"
-                          , "type": "image/png"
-                          , "size": 1048
-                          , "lastModifiedDate": "2011-09-20T16:16:48.000Z"
-                        }
-                      , {
-                            "name": "anthem.m4a"
-                          , "path": "/home/user/music/"
-                          , "type": "audio/mp4"
-                          , "size": 4440
-                          , "lastModifiedDate": "2011-11-12T03:38:08.000Z"
-                        }
-                    ]'
-
-              # response
-              {
-                  "error": false
-                , "errors": []
-                , "result": [
-                      "xyz123"
-                    , "abc789"
-                  ]
-              }
+              | # request
+              | curl dropsha.re/meta/new \
+              |   -X POST -H 'application/json' \
+              |   -d '[
+              |           {
+              |               "name": "logo.png"
+              |             , "path": "/home/user/images/"
+              |             , "type": "image/png"
+              |             , "size": 1048
+              |             , "lastModifiedDate": "2011-09-20T16:16:48.000Z"
+              |           }
+              |         , {
+              |               "name": "anthem.m4a"
+              |             , "path": "/home/user/music/"
+              |             , "type": "audio/mp4"
+              |             , "size": 4440
+              |             , "lastModifiedDate": "2011-11-12T03:38:08.000Z"
+              |           }
+              |       ]'
+              |
+              | # response
+              | {
+              |     "error": false
+              |   , "errors": []
+              |   , "result": [
+              |         "xyz123"
+              |       , "abc789"
+              |     ]
+              | }
 
           h3 CREATE files
           pre
             code
-              # request
-              curl dropsha.re/files/new \
-                -X POST \
-                --form xyz123=@/home/user/images/logo.png \
-                --form abc789=@/home/user/music/anthem.m4a
-
-              # response
-              {
-                  "error": false
-                , "errors": []
-                , "result": [
-                      {
-                          "id": xyz123
-                        , "size": 1048
-                        , ...
-                      }
-                    , ...
-                  ]
-              }
+              | # request
+              | curl dropsha.re/files/new \
+              |   -X POST \
+              |   --form xyz123=@/home/user/images/logo.png \
+              |   --form abc789=@/home/user/music/anthem.m4a
+              |
+              | # response
+              | {
+              |     "error": false
+              |   , "errors": []
+              |   , "result": [
+              |         {
+              |             "id": xyz123
+              |           , "size": 1048
+              |           , ...
+              |         }
+              |       , ...
+              |     ]
+              | }
 
           h3 GET meta
           | You'll either get back meta data or an error
           pre
             code
-              curl dropsha.re/meta/xyz123
+              | curl dropsha.re/meta/xyz123
 
           h3 GET file
           | You'll either get back the file or an error
           pre
             code
-              curl dropsha.re/files/xyz123/any-name-you-like.any
+              | curl dropsha.re/files/xyz123/any-name-you-like.any
 
         #pricing.uiview.pricing
           header.section Pricing
