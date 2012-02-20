@@ -187,7 +187,7 @@
 
   function onRemoveFile(ev) {
     var id = $(this).closest('.file-info').find('.id').text().trim()
-      , imSure = confirm('Are you sure you want to delet this?')
+      , imSure = confirm('Are you sure you want to delete this?')
       , self = this
       ;
 
@@ -284,8 +284,8 @@
   }
 
   function addHandlers() {
-    linkTpl = $('ul#uploadlist').html()
-    $('ul#uploadlist').html('')
+    linkTpl = $('ul#uploadlist').html();
+    $('ul#uploadlist').html('');
 
     // The input selector is created by updrop
     Updrop.create(handleDrop, 'body', '#dropzone');
