@@ -13,13 +13,13 @@
     "test": "served"
   },
   "engines": {
-    "node": "~0.4.8"
+    "node": ">= 0.4"
   },
   "dependencies": {
     "jeesh": "*",
     "pure": "2.x",
-    "ahr2": "~2.1",
-    "sequence": "~2.1"
+    "ahr2": "2.x",
+    "sequence": "2.x"
   },
   "devDependencies": {}
 }
