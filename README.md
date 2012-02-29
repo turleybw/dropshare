@@ -128,4 +128,4 @@ Installing Redis
 Ubuntu Linux
 ---
 
-    sudo apt-get install redis
+    sudo apt-get install redis-server # may be called just 'redis', depending on your distro
