@@ -2,8 +2,14 @@
   "author": "AJ ONeal <coolaj86@gmail.com> (http://coolaj86.info/)",
   "name": "dropshare",
   "description": "A ge.tt / min.us clone for your private servers",
-  "version": "0.1.1",
+  "version": "0.2.1",
   "homepage": "dropshare.coolaj86.info",
+  "contributors": [
+    {
+      "name": "Jamison Dance",
+      "email": "jergason@gmail.com"
+    }
+  ],
   "repository": {
     "type": "git",
     "url": "git://github.com/coolaj86/dropshare.git"
