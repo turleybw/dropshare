@@ -64,25 +64,44 @@ at your Home Office, or Business please contact <coolaj86@gmail.com>.
 Quick Start for Running your own DropShare
 ---
 
+  0. Install [NodeJS](http://nodejs.org): [Linux Binary](https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager) | [Linux Source](http://apptob.org) | [OS X | Windows](http://nodejs.org#download).
   0. Install `redis`. See Appendix (below) for installing redis on OS X.
-  0. Install [Spark](https://github.com/senchalabs/spark), `jade`, and `less` with `npm install -g spark jade less`.
+
+        # Ubuntu Linux
+        sudo apt-get install redis-server
+        
+        # OS X
+        brew install redis
+        launchctl load -w ~/Library/LaunchAgents/io.redis.redis-server.plist
+        # see notes below
+
   0. Install [Spark](https://github.com/senchalabs/spark), `jade`, [Pakmanager](https://github.com/coolaj86/node-pakmanager), and `less`.
 
-        npm install -g spark jade less pakmanager
+        npm install -g jade less pakmanager
+
+  0. Install dropshare in your webapps directory (I use [connect-vhoster](https://github.com/coolaj86/connect-vhoster))
+
+        # use mine (or use your own fork)
+        git clone git://github.com/coolaj86/dropshare.git dropshare.example.com
 
   0. Copy `config.default.js` to `config.js`, and customize any server
      settings you would like.
-  0. Run `cd public; ./deploy.sh` to compile the static assets.
-  0. Start the server with `spark`. By default it runs on port 3700.
 
-Quick Recap
+        cd dropshare.example.com
+        rsync -a config.default.js config.js
 
-    brew install redis || apt-get install redis
-    npm install -g spark jade less pakmanager
-    cp config.defaults.js config.js
-    open -a TextEdit config.js || gnome-open config.js
-    cd public; ./deploy.sh
-    spark
+  0. Download dependencies and compile the static assets.
+
+        # get server dependencies
+        npm install # possibly needs `sudo` on linux
+        
+        cd public
+        ./deploy.sh
+        cd ..
+
+  0. Start the server with `spark`. By default it runs on port 3700 (but if it's different, you'll see it).
+
+        node run-server.js
 
 Running Tests
 ---
