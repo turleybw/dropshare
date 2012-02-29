@@ -66,6 +66,15 @@ Quick Start for Running your own DropShare
 
   0. Install [NodeJS](http://nodejs.org): [Linux Binary](https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager) | [Linux Source](http://apptob.org) | [OS X | Windows](http://nodejs.org#download).
   0. Install `redis`. See Appendix (below) for installing redis on OS X.
+
+        # Ubuntu Linux
+        sudo apt-get install redis-server
+        
+        # OS X
+        brew install redis
+        launchctl load -w ~/Library/LaunchAgents/io.redis.redis-server.plist
+        # see notes below
+
   0. Install [Spark](https://github.com/senchalabs/spark), `jade`, [Pakmanager](https://github.com/coolaj86/node-pakmanager), and `less`.
 
         npm install -g jade less pakmanager
@@ -84,7 +93,7 @@ Quick Start for Running your own DropShare
   0. Download dependencies and compile the static assets.
 
         # get server dependencies
-        npm install
+        npm install # possibly needs `sudo` on linux
         
         cd public
         ./deploy.sh
