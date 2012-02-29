@@ -19,11 +19,12 @@ expect_not_equal () {
   fi
 }
 
+# make sure we have modules installed
+npm install .. > /dev/null 2>&1
+
 # Make sure redis is running
 redis-server > /dev/null 2>&1 &
 REDIS_PID=$!
-
-echo "Last pid was $REDIS_PID"
 
 # start the server
 spark -C .. > /dev/null 2>&1 &
