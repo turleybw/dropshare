@@ -148,7 +148,8 @@
 
             link.find('progress').attr('value', bytesLoaded);
             link.find('progress').find('.val').text(bytesLoaded);
-            link.find('.byte-count').text(toByteCount(bytesLoaded));
+            link.find('.byte-count').text(toByteCount(bytesLoaded) + ' ');
+            link.find('.byte-count-total').text(' ' + toByteCount(file.size));
           //}
           });
           // TODO 
