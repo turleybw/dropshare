@@ -13,6 +13,25 @@
     , linkTpl
     ;
 
+  function toByteCount(size) {
+    // 102.4
+    if (size < 102) {
+      return size + ' B';
+    }
+
+    // 104857.6
+    if (size < 104858) {
+      return (size / 1024).toFixed(1) + ' KiB';
+    }
+
+    // 107374182.4
+    if (size < 107374182) {
+      return (size / (1024 * 1024)).toFixed(1) + ' MiB';
+    }
+
+    // 1099511627776
+    return (size / (1024 * 1024 * 1024)).toFixed(1) + ' GiB';
+  }
 
   function uploadMeta(files, meta) {
     // I was attaching directly files[i].link = link
@@ -129,6 +148,7 @@
 
             link.find('progress').attr('value', bytesLoaded);
             link.find('progress').find('.val').text(bytesLoaded);
+            link.find('.byte-count').text(toByteCount(bytesLoaded));
           //}
           });
           // TODO 
