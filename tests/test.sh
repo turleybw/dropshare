@@ -19,6 +19,12 @@ expect_not_equal () {
   fi
 }
 
+# Make sure redis is running
+redis-server > /dev/null 2>&1 &
+REDIS_PID=$!
+
+echo "Last pid was $REDIS_PID"
+
 # start the server
 spark -C .. > /dev/null 2>&1 &
 PID=$!
@@ -108,7 +114,7 @@ expect "$EXPECTED" "$RESPONSE" "Getting a deleted file should return an error, b
 # Test getting metadata
 # TODO: how to test if the timestamp will be different every time?
 RESPONSE=`curl --silent "${HOST}/meta/${ID0}" -X GET`
-EXPECTED="{\"response\":\"success\",\"data\":{\"size\":4460,\"lastModifiedDate\":\"2011-10-29T20:22:56.000Z\",\"fileSize\":4460,\"name\":\"temp.txt\",\"type\":\"text/plain\",\"fileName\":\"test.txt\",\"timestamp\":1321285910694,\"sha1checksum\":\"a3067b953f1fb29fb6b65e66a47944af4775b70b\"}}"
+EXPECTED="{\"success\":true,\"result\":{\"size\":4460,\"lastModifiedDate\":\"2011-10-29T20:22:56.000Z\",\"fileSize\":4460,\"name\":\"temp.txt\",\"type\":\"text/plain\",\"fileName\":\"test.txt\",\"timestamp\":1321285910694,\"sha1checksum\":\"a3067b953f1fb29fb6b65e66a47944af4775b70b\"}}"
 expect "$EXPECTED" "$RESPONSE" "Querying for metadata with a valid ID should return the metadata for that file."
 echo "Just the timestamp should be different. If you think of a good way to compare dynamically generated timestamps let me know."
 
@@ -128,7 +134,6 @@ RESULT=`curl --silent "${HOST}/files/new"  -X POST \
       }]'`
 ID=`echo ${RESULT} | json-cherry-pick 0` || exit
 expect_not_equal "$ID" "123456" "Users should not be able to specify file IDs by default."
-
 
 kill $PID
 
@@ -150,4 +155,6 @@ ID=`echo ${RESULT} | json-cherry-pick 0` || exit
 expect "123456" "$ID" "Users should be able to specify file IDs if the setting is allowed."
 
 kill $PID
+kill $REDIS_PID > /dev/null 2>&1
+
 mv ../config.js ./config.js && mv ../config.normal.js ../config.js
