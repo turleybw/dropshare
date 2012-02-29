@@ -13,12 +13,12 @@
     "test": "cd tests && ./test.sh"
   },
   "engines": {
-    "node": "~0.4.x"
+    "node": ">= 0.6"
   },
   "dependencies": {
       "connect": "~1.7"
     , "mime": "~1.2"
-    , "fs.extra": "1.0.x"
+    , "fs.extra": "1.x"
     , "connect-cors": "~0.5"
     , "sequence": "~2.1"
     , "jade": "0.17.x"
