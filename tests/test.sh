@@ -19,6 +19,10 @@ expect_not_equal () {
   fi
 }
 
+# Make sure redis is running
+redis-server > /dev/null 2>&1 &
+REDIS_PID=$!
+
 # start the server
 spark -C .. > /dev/null 2>&1 &
 PID=$!
@@ -129,7 +133,6 @@ RESULT=`curl --silent "${HOST}/files/new"  -X POST \
 ID=`echo ${RESULT} | json-cherry-pick 0` || exit
 expect_not_equal "$ID" "123456" "Users should not be able to specify file IDs by default."
 
-
 kill $PID
 
 # Start a new server with user-specified ids allowed
@@ -150,4 +153,5 @@ ID=`echo ${RESULT} | json-cherry-pick 0` || exit
 expect "123456" "$ID" "Users should be able to specify file IDs if the setting is allowed."
 
 kill $PID
+kill $REDIS_PID
 mv ../config.js ./config.js && mv ../config.normal.js ../config.js
