@@ -1,4 +1,4 @@
 #!/bin/bash
-#lessc style.less > style.css
+lessc style.less > style.css
 jade index.jade # index.html
-#pakmanager build
+pakmanager build
