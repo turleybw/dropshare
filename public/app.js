@@ -149,7 +149,7 @@
             link.find('.js-byte-count').html(
                 '<br>'
               + toByteCount(bytesLoaded)
-              + ' of' 
+              + ' of ' 
               + toByteCount(file.size)
             );
           //}
