@@ -40,26 +40,24 @@
     var fileData = []
       ;
 
-    $('#no-links').hide();
+    $('#js-drop .js-no-links').hide();
 
     // begin tempalte
     meta.forEach(function (m, i) {
       var link = $(linkTpl)
         ;
 
-      link.find('.id').text('');
-      link.find('.name').text(m.name);
-      link.find('a').text(' ');
-      link.find('a').attr('href', '#');
-      //link.find('progress').attr('max', m.size);
-      //link.find('progress').find('.max', m.size);
-      link.find('.remove-file').hide();
+      link.find('.js-id').text('');
+      link.find('.js-name').text(m.name);
+      link.find('.js-ds-link').text(' ');
+      link.find('.js-ds-link').attr('href', '#');
+      link.find('.js-remove-file').hide();
 
       fileData[i] = {};
       fileData[i].link = link;
       fileData[i].file = files[i];
 
-      $('ul#uploadlist').append(link);
+      $('#js-drop .js-uploadlist').append(link);
     });
 
     request.post(location.pathname + 'files/new', {}, meta).when(function (err, ahr, data) {
@@ -81,19 +79,17 @@
         console.log('formData append', token, file.name);
 
         // TODO use data-meta-id
-        link.find('.id').text(token);
-        //link.find('.name').text(file.name);
-        //link.find('progress')
-        link.find('progress').attr('max', file.size);
-        link.find('progress').find('.max').text(file.size);
-        link.find('.name').remove();
-        link.find('a').text(host + '#' + token); //encodeURIComponent(file.name));
-        link.find('a').attr('href', fullhost + '#' + token); //encodeURIComponent(file.name));
+        link.find('.js-id').text(token);
+        link.find('.js-progress').attr('max', file.size);
+        link.find('.js-progress').find('.js-max').text(file.size);
+        link.find('.js-name').remove();
+        link.find('.js-ds-link').text(host + '#' + token); //encodeURIComponent(file.name));
+        link.find('.js-ds-link').attr('href', fullhost + '#' + token); //encodeURIComponent(file.name));
       });
       // this hack forces Chrome / Safari to redraw
-      $('#uploadlist')[0].style.display = 'none';
-      $('#uploadlist')[0].offsetHeight;
-      $('#uploadlist')[0].style.display = 'block';
+      $('#js-drop .js-uploadlist')[0].style.display = 'none';
+      $('#js-drop .js-uploadlist')[0].offsetHeight;
+      $('#js-drop .js-uploadlist')[0].style.display = 'block';
 
       // "global" upload queue
       sequence.then(function (next) {
@@ -110,9 +106,10 @@
             console.log('file, link', file, link);
 
             // TODO
-            link.find('progress').remove();
+            link.find('.js-progress').remove();
+            link.find('.js-byte-count').remove();
             // TODO
-            //link.find('.remove-file').show();
+            //link.find('.js-remove-file').show();
           });
           next();
         });
@@ -146,10 +143,15 @@
               bytesLeft = file.size;
             }
 
-            link.find('progress').attr('value', bytesLoaded);
-            link.find('progress').find('.val').text(bytesLoaded);
-            link.find('.byte-count').text(toByteCount(bytesLoaded) + ' ');
-            link.find('.byte-count-total').text(' ' + toByteCount(file.size));
+            link.find('.js-progress').attr('value', bytesLoaded);
+            link.find('.js-progress').find('.js-val').text(bytesLoaded);
+            // TODO use a hide/show on 'of'
+            link.find('.js-byte-count').html(
+                '<br>'
+              + toByteCount(bytesLoaded)
+              + ' of' 
+              + toByteCount(file.size)
+            );
           //}
           });
           // TODO 
@@ -188,8 +190,7 @@
         , "path": file.mozFullPath || file.webkitRelativePath
       });
       //file.xyz = 'something';
-      // $()
-      //$('#uploadlist').append('<li class=\'file-info\'></li>');
+      //$('.js-uploadlist').append('<li class=\'file-info\'></li>');
       if (warnOnLargeFiles) {
         warnOnLargeFiles = false;
         if (file.size >= (100 * 1024 * 1024)) {
@@ -207,7 +208,7 @@
   }
 
   function onRemoveFile(ev) {
-    var id = $(this).closest('.file-info').find('.id').text().trim()
+    var id = $(this).closest('.js-file-info').find('.js-id').text().trim()
       , imSure = confirm('Are you sure you want to delete this?')
       , self = this
       ;
@@ -218,9 +219,9 @@
 
     request.delete(location.protocol + '//' + location.host + location.pathname + 'files/' + id).when(function (err, ahr, data) {
       console.log('prolly deleted:', err, ahr, data);
-      $(self).closest('li').remove();
-      if (!$('ul#uploadlist li').length) {
-        $('#no-links').show();
+      $(self).closest('.js-file-info').remove();
+      if (!$('#js-drop .js-uploadlist .js-file-info').length) {
+        $('#js-drop .js-no-links').show();
       }
     });
   }
@@ -273,9 +274,9 @@
       }
 
       url = location.protocol + '//' + location.host + location.pathname + 'files/' + id + '/' + data.result.name
-      $('a.dnd').attr('href', url);
-      $('a.dnd').attr('data-downloadurl', type + ':' + decodeURIComponent(name) + ':' + url);
-      $('#loading').hide();
+      $('.js-dnd').attr('href', url);
+      $('.js-dnd').attr('data-downloadurl', type + ':' + decodeURIComponent(name) + ':' + url);
+      $('#js-loading').hide();
 
       if (data.result.expired) {
         alert('Sad day! "' + (data.result.name || 'That file')  + '" is no longer available. :\'|');
@@ -290,12 +291,12 @@
     });
 
     // TODO loading
-    $('#loading').show();
-    $('a.dnd').attr('href', url);
-    $('a.dnd').attr('data-downloadurl', type + ':' + decodeURIComponent(name) + ':' + url);
+    $('#js-loading').show();
+    $('.js-dnd').attr('href', url);
+    $('.js-dnd').attr('data-downloadurl', type + ':' + decodeURIComponent(name) + ':' + url);
 
-    $('.uiview').hide();
-    $('.share.uiview').show();
+    $('.js-uiview').hide();
+    $('.js-share.js-uiview').show();
 
     return true;
   }
@@ -305,24 +306,23 @@
   }
 
   function addHandlers() {
-    linkTpl = $('ul#uploadlist').html();
-    $('ul#uploadlist').html('');
+    linkTpl = $('#js-drop .js-uploadlist').html();
+    $('#js-drop .js-uploadlist').html('');
 
     // The input selector is created by updrop
-    Updrop.create(handleDrop, 'body', '#dropzone');
-    Updrop.create(handleDrop, 'body', '#uploadzone');
+    Updrop.create(handleDrop, '#js-drop', '.js-dropzone');
+    Updrop.create(handleDrop, '#js-drop', '.js-uploadzone');
+ 
+    // If the user mistakenly drops anywhere on the page, we'll catch it
+    $('body').bind('dragover', Updrop.handleDrag);
+    $('body').bind('drop', Updrop.abstract(handleDrop));
     
-    $('body').delegate('.remove-file', 'click', onRemoveFile);
+    $('body').delegate('.js-remove-file', 'click', onRemoveFile);
 
-    //$('body').delegate('.tabs a', 'click', switchTabView);
-    $('body').delegate('a.dnd', 'dragstart', onDragOut);
-    $('.uiview').hide();
-    UiTabs.create(handleSpecialRoutes, 'body', '.tab', '.uiview');
+    $('body').delegate('.js-dnd', 'dragstart', onDragOut);
+    $('.js-uiview').hide();
+    UiTabs.create(handleSpecialRoutes, 'body', '.js-tab', '.js-uiview');
   }
 
-
-
-
   $.domReady(addHandlers);
-
 }());

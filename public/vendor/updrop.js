@@ -6,25 +6,30 @@
   //
 
   function handleDrag(ev) {
-    console.log('handledrag');
-    //ev.stopPropagation();
     ev.preventDefault();
+    ev.stopPropagation();
   }
 
-  function NewDropAreaWidget(callback, widgetRoot, dropEl) {
-    var parentDom = $(dropEl)
-      , chooser
-      , chooserClass
-      ;
-
+  function NewFileSelectOrDropHandler(callback) {
     function handleFileSelectOrDrop(ev) {
       ev.preventDefault();
+      ev.stopPropagation();
 
       var files = this.files || ev.dataTransfer && ev.dataTransfer.files
         ;
 
       callback.call(this, files, ev);
     }
+
+    return handleFileSelectOrDrop;
+  }
+
+  function NewDropAreaWidget(callback, widgetRoot, dropEl) {
+    var parentDom = $(dropEl)
+      , chooser
+      , chooserClass
+      , handleFileSelectOrDrop = NewFileSelectOrDropHandler(callback);
+      ;
 
     function onMouseMove(ev) {
       // This calculation is done every time because
@@ -89,4 +94,6 @@
   }
 
   module.exports.create = NewDropAreaWidget;
+  module.exports.abstract = NewFileSelectOrDropHandler;
+  module.exports.handleDrag = handleDrag;
 }());
