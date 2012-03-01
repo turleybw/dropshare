@@ -103,6 +103,23 @@ Quick Start for Running your own DropShare
 
         node run-server.js
 
+
+Server Parameters
+---
+The server can take parameters in a few forms. If you are just running a
+stand-alone server, then you can put them in the `config.js` file. If
+you are creating a Dropshare server in code, then you can pass an object
+in to the `create()` method exported by `lib/index.js`. 
+
+The parameters all have sensible defaults that should work out of the box,
+so you don't actually need any of them.
+
+* `client`: the path to the public folder for the browser interface.
+  Defaults to `./public`
+* `files`: a path to store uploaded files. Defaults to `./files`.
+* `allowUserSpecifiedIds`: if true, allow users to specify the ids that files
+   will be stored under.
+
 Running Tests
 ---
 
