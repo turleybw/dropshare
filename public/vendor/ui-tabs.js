@@ -19,12 +19,6 @@
 
       lastHash = resource;
 
-      /*
-      if (0 !== resource.indexOf('#/')) {
-        return;
-      }
-      */
-      
       urlObj = url.parse(resource.substr(1), true, true);
       console.log(urlObj);
 
@@ -35,12 +29,6 @@
       // discount #/
       console.log('pathname', urlObj.pathname.split('/'));
       pathnames = urlObj.pathname.split('/');
-      /*
-      if ('#' !== pathnames.shift()) {
-        console.error('Bad Parse');
-        return;
-      }
-      */
 
       // hides children as well
       $(uiView).hide();
@@ -52,16 +40,16 @@
           return;
         }
         // TODO always append uiview or not?
-        viewSelector += uiView + '.' + pathname + ' ';
-        tabSelector += uiTab + '.' + pathname + ' ';
+        viewSelector += uiView + '.js-' + pathname + ' ';
+        tabSelector += uiTab + '.js-' + pathname + ' ';
         console.log('viewSelector', viewSelector);
         console.log('tabSelector', viewSelector);
         $(viewSelector).show();
         $(tabSelector).addClass('selected');
       });
       // This allows for a default tab
-      viewSelector += uiView + '.index';
-      tabSelector += uiTab + '.index';
+      viewSelector += uiView + '.js-index';
+      tabSelector += uiTab + '.js-index';
       $(viewSelector).show();
       $(tabSelector).addClass('selected');
     }
@@ -71,16 +59,6 @@
         , curHref = location.href.split('#').shift()
         ;
 
-      /*
-      if (href.substr(0, location.host.length) !== location.host) {
-        console.log('http/https mismatch or on a different domain.', href, location.host);
-        // on a different domain
-        // or http/https mismatch
-        return;
-      }
-      */
-
-      console.log(href);
       if (href.substr(0, curHref.length) !== curHref) {
         console.log('Moving to a different directory.', href, curHref);
         // in a different directory
