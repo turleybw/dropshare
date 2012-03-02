@@ -258,7 +258,8 @@
 
     var id = resource[0]
       , name = resource[1]
-      , url = location.protocol + '//' + location.host + location.pathname + 'files/' + id + '/' + name
+      , backupName = 'dropshare-download.bin'
+      , url = location.protocol + '//' + location.host + location.pathname + 'files/' + id + '/' + (name || backupName)
       , type = 'application/octet-stream'
       ;
 
@@ -276,7 +277,7 @@
       $('#js-loading').hide();
 
       if (data.result.expired) {
-        alert('Sad day! "' + (data.result.name || 'That file')  + '" is no longer available. :\'|');
+        alert('Sad day! "' + (name || 'That file')  + '" is no longer available. :\'|');
         return;
       }
 
@@ -291,7 +292,7 @@
     // TODO loading
     $('#js-loading').show();
     $('.js-dnd').attr('href', url);
-    $('.js-dnd').attr('data-downloadurl', type + ':' + decodeURIComponent(name || 'dropshare-download.bin') + ':' + url);
+    $('.js-dnd').attr('data-downloadurl', type + ':' + decodeURIComponent(name || backupName) + ':' + url);
 
     $('.js-uiview').hide();
     $('.js-share.js-uiview').show();
