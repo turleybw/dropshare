@@ -245,7 +245,6 @@
     // convert #share/xzy and #/share/xyz to #xyz
     // TODO remove after a reasonable amount of time
     if (/\/(s|share)/.exec(resource[0] || resource[1])) {
-      console.log('share', location.hash);
       resource.shift(); // moves the '#' out
       resource.shift(); // moves 's[hare]' out
       location.hash = resource.join('/');
@@ -254,26 +253,24 @@
 
     // only handle short urls without leading '/'
     if ('' === resource[0]) {
-      console.log('noshare', location.hash);
       return false;
     }
 
-    console.log('goshare', location.hash);
-
-    console.log(resource);
     var id = resource[0]
-      , name = resource[1] || 'stream.bin'
+      , name = resource[1]
       , url = location.protocol + '//' + location.host + location.pathname + 'files/' + id + '/' + name
       , type = 'application/octet-stream'
       ;
 
-    request.get(location.pathname + 'meta/' + id).when(function (err, ahr, data) {
+    function updateInfo(err, ahr, data) {
       if (!data || !data.success) {
         alert('Sad day! Looks like a bad link.');
         return;
       }
 
-      url = location.protocol + '//' + location.host + location.pathname + 'files/' + id + '/' + data.result.name
+      name = name || data.result.name || data.result.fileName;
+
+      url = location.protocol + '//' + location.host + location.pathname + 'files/' + id + '/' + name
       $('.js-dnd').attr('href', url);
       $('.js-dnd').attr('data-downloadurl', type + ':' + decodeURIComponent(name) + ':' + url);
       $('#js-loading').hide();
@@ -283,17 +280,18 @@
         return;
       }
 
-      console.log('data.result', data.result);
       if (!data.result.sha1checksum && !data.result.sha1sum && !data.result.md5sum) {
         alert('Wait for it... \njust. a. few. more. minutes... \nThe file is still uploading (or the upload failed{');
         return;
       }
-    });
+    }
+
+    request.get(location.pathname + 'meta/' + id).when(updateInfo);
 
     // TODO loading
     $('#js-loading').show();
     $('.js-dnd').attr('href', url);
-    $('.js-dnd').attr('data-downloadurl', type + ':' + decodeURIComponent(name) + ':' + url);
+    $('.js-dnd').attr('data-downloadurl', type + ':' + decodeURIComponent(name || 'dropshare-download.bin') + ':' + url);
 
     $('.js-uiview').hide();
     $('.js-share.js-uiview').show();
