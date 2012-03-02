@@ -305,6 +305,9 @@
   }
 
   function addHandlers() {
+    if (!location.host.match(/dropsha.re$/)) {
+      $('.js-delete-notice').hide();
+    }
     linkTpl = $('#js-drop .js-uploadlist').html();
     $('#js-drop .js-uploadlist').html('');
 
