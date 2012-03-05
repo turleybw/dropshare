@@ -5,7 +5,7 @@
     , config = require('./config')
     , options = {
           "tmp": "/tmp"
-        , "files": __dirname + "/files"
+        , "storageDir": __dirname + "/files"
         , "client": __dirname + "/public"
       }
     , server

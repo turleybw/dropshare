@@ -116,7 +116,7 @@ so you don't actually need any of them.
 
 * `client`: the path to the public folder for the browser interface.
   Defaults to `./public`
-* `files`: a path to store uploaded files. Defaults to `./files`.
+* `storageDir`: a path to a directory to store uploaded files. Defaults to `./files`.
 * `allowUserSpecifiedIds`: if true, allow users to specify the ids that files
    will be stored under.
 
