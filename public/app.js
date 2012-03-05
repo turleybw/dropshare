@@ -245,7 +245,6 @@
     // convert #share/xzy and #/share/xyz to #xyz
     // TODO remove after a reasonable amount of time
     if (/\/(s|share)/.exec(resource[0] || resource[1])) {
-      console.log('share', location.hash);
       resource.shift(); // moves the '#' out
       resource.shift(); // moves 's[hare]' out
       location.hash = resource.join('/');
@@ -254,46 +253,46 @@
 
     // only handle short urls without leading '/'
     if ('' === resource[0]) {
-      console.log('noshare', location.hash);
       return false;
     }
 
-    console.log('goshare', location.hash);
-
-    console.log(resource);
     var id = resource[0]
-      , name = resource[1] || 'stream.bin'
-      , url = location.protocol + '//' + location.host + location.pathname + 'files/' + id + '/' + name
+      , name = resource[1]
+      , backupName = 'dropshare-download.bin'
+      , url = location.protocol + '//' + location.host + location.pathname + 'files/' + id + '/' + (name || backupName)
       , type = 'application/octet-stream'
       ;
 
-    request.get(location.pathname + 'meta/' + id).when(function (err, ahr, data) {
+    function updateInfo(err, ahr, data) {
       if (!data || !data.success) {
         alert('Sad day! Looks like a bad link.');
         return;
       }
 
-      url = location.protocol + '//' + location.host + location.pathname + 'files/' + id + '/' + data.result.name
+      name = name || data.result.name || data.result.fileName;
+
+      url = location.protocol + '//' + location.host + location.pathname + 'files/' + id + '/' + name
       $('.js-dnd').attr('href', url);
       $('.js-dnd').attr('data-downloadurl', type + ':' + decodeURIComponent(name) + ':' + url);
       $('#js-loading').hide();
 
       if (data.result.expired) {
-        alert('Sad day! "' + (data.result.name || 'That file')  + '" is no longer available. :\'|');
+        alert('Sad day! "' + (name || 'That file')  + '" is no longer available. :\'|');
         return;
       }
 
-      console.log('data.result', data.result);
       if (!data.result.sha1checksum && !data.result.sha1sum && !data.result.md5sum) {
         alert('Wait for it... \njust. a. few. more. minutes... \nThe file is still uploading (or the upload failed{');
         return;
       }
-    });
+    }
+
+    request.get(location.pathname + 'meta/' + id).when(updateInfo);
 
     // TODO loading
     $('#js-loading').show();
     $('.js-dnd').attr('href', url);
-    $('.js-dnd').attr('data-downloadurl', type + ':' + decodeURIComponent(name) + ':' + url);
+    $('.js-dnd').attr('data-downloadurl', type + ':' + decodeURIComponent(name || backupName) + ':' + url);
 
     $('.js-uiview').hide();
     $('.js-share.js-uiview').show();
@@ -306,6 +305,9 @@
   }
 
   function addHandlers() {
+    if (!location.host.match(/dropsha.re$/)) {
+      $('.js-delete-notice').hide();
+    }
     linkTpl = $('#js-drop .js-uploadlist').html();
     $('#js-drop .js-uploadlist').html('');
 
