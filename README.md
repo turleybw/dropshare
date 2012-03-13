@@ -140,6 +140,8 @@ Dropshare is available under the following licenses:
   * MIT
   * Apache 2
 
+Copyright 2011 - 2012 Jamison Dance and AJ ONeal
+
 Appendix
 ===
 
