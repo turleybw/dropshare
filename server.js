@@ -8,7 +8,7 @@
         , "storageDir": __dirname + "/files"
         , "client": __dirname + "/public"
       }
-    , server
+    , app
     , attributeName
     ;
 
@@ -18,6 +18,6 @@
     options[attributeName] = config[attributeName];
   }
 
-  server = dropshare.create(options)
-  module.exports = server;
+  app = dropshare.create(options)
+  module.exports = app;
 }());

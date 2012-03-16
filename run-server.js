@@ -2,16 +2,25 @@
   "use strict";
 
   var config = require('./config')
-    , server = require('./server')
+    , app = require('./server')
     ;
 
-  function logPort() {
-    console.log("Dropsharing on " + server.address().address + ":" + server.address().port);
+  function run() {
+    var server
+      ;
+
+    function logPort() {
+      console.log("Dropsharing on " + server.address().address + ":" + server.address().port);
+    }
+
+    if (config.port) {
+      server = app.listen(config.port, logPort);
+    } else {
+      server = app.listen(logPort);
+    }
   }
 
-  if (config.port) {
-    server.listen(config.port, logPort);
-  } else {
-    server.listen(logPort);
+  if (require.main === module) {
+    run();
   }
 }());
