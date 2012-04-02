@@ -21,7 +21,7 @@ fi
 # TODO write in python (available on most *nix?)
 FILE_SIZE=`du "${FILE}" | cut -f1`
 # from the commandline, only half of these slashes are necessary
-FILE_NAME=`basename "${FILE}" | sed 's/\\\\/\\\\\\\\/g' | sed 's/"/\\\\"/g'`
+FILE_NAME=`basename "${FILE}" | sed -e 's/\\\\/\\\\\\\\/g' -e 's/"/\\\\"/g' -e 's/ /_/g'`
 if [ -z "${FILE_PATH}" ]
 then
   FILE_PATH=`dirname "${FILE}" | sed 's/\\\\/\\\\\\\\/g' | sed 's/"/\\\\"/g'`
