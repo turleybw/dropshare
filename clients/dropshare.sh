@@ -22,6 +22,7 @@ fi
 FILE_SIZE=`du "${FILE}" | cut -f1`
 # from the commandline, only half of these slashes are necessary
 FILE_NAME=`basename "${FILE}" | sed -e 's/\\\\/\\\\\\\\/g' -e 's/"/\\\\"/g' -e 's/ /_/g'`
+FILE_ONAME=`basename "${FILE}" | sed -e 's/\\\\/\\\\\\\\/g' -e 's/"/\\\\"/g'`
 if [ -z "${FILE_PATH}" ]
 then
   FILE_PATH=`dirname "${FILE}" | sed 's/\\\\/\\\\\\\\/g' | sed 's/"/\\\\"/g'`
@@ -64,4 +65,4 @@ echo "wget 'http://api.dropsha.re/files/${ID}/${FILE_NAME}'"
 echo ""
 echo "curl 'http://api.dropsha.re/files/${ID}' -o '${FILE_NAME}'"
 echo ""
-echo "dropshare-get ${ID}"
+echo "dropshare-get ${ID} ${FILE_ONAME}"
