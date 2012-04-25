@@ -4,35 +4,39 @@ import os
 import json
 import mimetypes
 
-HOST="http://api.dropsha.re"
+HOST_API="http://api.dropsha.re"
+HOST_WEB="http://dropsha.re"
 
 def upload(f):
-   name = f.name.replace(' ', '_')
+   relpath = f.name
+   name = f.name.rpartition('/')[2].replace(' ', '_')
    
    attr = {}
-   attr["size"] = os.path.getsize(name)
-   attr["lastModifiedDate"] = os.path.getmtime(name)
-   attr["filename"] = name 
+   attr["size"] = os.path.getsize(relpath)
+   attr["lastModifiedDate"] = os.path.getmtime(relpath)
+   attr["filename"] = name
    attr["type"] = mimetypes.guess_type(name)[1]
-   attr["path"] = os.path.abspath(name) 
+   attr["path"] = os.path.abspath(relpath) 
    
    header = "Content-Type: application/json"
    
+   # TODO use python's http client
    cmd = "curl --silent %s/files/new -X POST -H \"%s\" -d \'[%s]\'"\
-      % (HOST, header, json.dumps(attr))
+      % (HOST_API, header, json.dumps(attr))
    result = os.popen(cmd).readline()
    #ex ["pQC+dgA"]
    result = result[2:-2]
-   print "Uploading to %s/files/%s/%s" % (HOST, result, name)
+   print "Uploading to %s/files/%s/%s" % (HOST_API, result, name)
    
+   # TODO use python's http client
    cmd = "curl --silent --progress-bar %s/files -X POST \
-   --form %s=\'@%s\'" % (HOST, result, name)
+     --form %s=\'@%s\'" % (HOST_API, result, relpath)
    os.popen(cmd).readline()
    
    print "Your file, Sir! (or Ma'am):\n"
-   print "http://dropsha.re/#%s\n" % (result)
-   print "wget 'http://api.dropsha.re/files/%s/%s'\n" % (result, name)
-   print "curl 'http://api.dropsha.re/files/%s' -o '%s'\n" % (result, name)
+   print "%s#%s\n" % (HOST_WEB, result)
+   print "wget '%s/files/%s/%s'\n" % (HOST_API, result, name)
+   print "curl '%s/files/%s' -o '%s'\n" % (HOST_API, result, name)
    print "dropshare-get %s" % (result)   
    
 def main():
