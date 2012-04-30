@@ -30,7 +30,7 @@ With the web-client you can drag-n-drop or use the normal upload/download.
 
 [http://dropsha.re](http://dropsha.re)
 
-Bash
+Commandline
 ---
 
 **Usage**
@@ -50,9 +50,14 @@ Bash
     
     curl 'http://api.dropsha.re/files/foHsCQA' -o 'coolaj86@ubuntu-tablet.pub'
 
-**Installation**
+### Python Client
 
-    sudo wget 'https://raw.github.com/coolaj86/dropshare/master/clients/dropshare.sh' -O '/usr/local/bin/dropshare'
+    sudo wget 'https://raw.github.com/SpotterRF/dropshare/master/clients/dropshare.py' -O '/usr/local/bin/dropshare'
+    sudo chmod a+x '/usr/local/bin/dropshare'
+
+### Bash Client
+
+    sudo wget 'https://raw.github.com/SpotterRF/dropshare/master/clients/dropshare.sh' -O '/usr/local/bin/dropshare'
     sudo chmod a+x '/usr/local/bin/dropshare'
 
 Server
@@ -82,7 +87,7 @@ Quick Start for Running your own DropShare
   0. Install dropshare in your webapps directory (I use [connect-vhoster](https://github.com/coolaj86/connect-vhoster))
 
         # use mine (or use your own fork)
-        git clone git://github.com/coolaj86/dropshare.git dropshare.example.com
+        git clone git://github.com/SpotterRF/dropshare.git dropshare.example.com
 
   0. Copy `config.default.js` to `config.js`, and customize any server
      settings you would like.
