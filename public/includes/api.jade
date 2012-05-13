@@ -20,59 +20,59 @@
 
   h3 CREATE meta data to retrieve ids
   pre
-    code
-      | # request
-      | curl dropsha.re/meta/new \
-      |   -X POST -H 'application/json' \
-      |   -d '[
-      |           {
-      |               "name": "logo.png"
-      |             , "path": "/home/user/images/"
-      |             , "type": "image/png"
-      |             , "size": 1048
-      |             , "lastModifiedDate": "2011-09-20T16:16:48.000Z"
-      |           }
-      |         , {
-      |               "name": "anthem.m4a"
-      |             , "path": "/home/user/music/"
-      |             , "type": "audio/mp4"
-      |             , "size": 4440
-      |             , "lastModifiedDate": "2011-11-12T03:38:08.000Z"
-      |           }
-      |       ]'
-      |
-      | # response
-      | {
-      |     "error": false
-      |   , "errors": []
-      |   , "result": [
-      |         "xyz123"
-      |       , "abc789"
-      |     ]
-      | }
+    code.
+      # request
+      curl dropsha.re/meta/new \\
+        -X POST -H 'application/json' \\
+        -d '[
+                {
+                    "name": "logo.png"
+                  , "path": "/home/user/images/"
+                  , "type": "image/png"
+                  , "size": 1048
+                  , "lastModifiedDate": "2011-09-20T16:16:48.000Z"
+                }
+              , {
+                    "name": "anthem.m4a"
+                  , "path": "/home/user/music/"
+                  , "type": "audio/mp4"
+                  , "size": 4440
+                  , "lastModifiedDate": "2011-11-12T03:38:08.000Z"
+                }
+            ]'
+      
+      # response
+      {
+          "error": false
+        , "errors": []
+        , "result": [
+              "xyz123"
+            , "abc789"
+          ]
+      }
 
   h3 CREATE files
   pre
-    code
-      | # request
-      | curl dropsha.re/files/new \
-      |   -X POST \
-      |   --form xyz123=@/home/user/images/logo.png \
-      |   --form abc789=@/home/user/music/anthem.m4a
-      |
-      | # response
-      | {
-      |     "error": false
-      |   , "errors": []
-      |   , "result": [
-      |         {
-      |             "id": xyz123
-      |           , "size": 1048
-      |           , ...
-      |         }
-      |       , ...
-      |     ]
-      | }
+    code.
+      # request
+      curl dropsha.re/files/new \\
+        -X POST \\
+        --form xyz123=@/home/user/images/logo.png \\
+        --form abc789=@/home/user/music/anthem.m4a
+      
+      # response
+      {
+          "error": false
+        , "errors": []
+        , "result": [
+              {
+                  "id": xyz123
+                , "size": 1048
+                , ...
+              }
+            , ...
+          ]
+      }
 
   h3 GET meta
   | You'll either get back meta data or an error
