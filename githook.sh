@@ -1,5 +1,6 @@
 #!/bin/bash
+
 git pull
-cd public
+pushd public
   ./deploy.sh
-cd -
+popd

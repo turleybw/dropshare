@@ -16,6 +16,7 @@
     "node": ">= 0.4"
   },
   "dependencies": {
+    "url": "*",
     "jeesh": "*",
     "pure": "2.x",
     "ahr2": "2.x",
