@@ -28,7 +28,6 @@
     , "fs.extra": "1.x"
     , "connect-cors": "~0.5"
     , "sequence": "~2.1"
-    , "jade": "0.17.x"
     , "redis": "0.6.x"
     , "futures": "2.3.x"
     , "formaline": "0.6.x"
