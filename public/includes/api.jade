@@ -22,9 +22,7 @@
   pre
     code
       | # request
-      | curl dropsha.re/meta/new \
-      |   -X POST -H 'application/json' \
-      |   -d '[
+      | curl dropsha.re/meta/new -X POST -H 'application/json' -d '[
       |           {
       |               "name": "logo.png"
       |             , "path": "/home/user/images/"
@@ -40,7 +38,7 @@
       |             , "lastModifiedDate": "2011-11-12T03:38:08.000Z"
       |           }
       |       ]'
-      |
+      |\n
       | # response
       | {
       |     "error": false
@@ -55,11 +53,8 @@
   pre
     code
       | # request
-      | curl dropsha.re/files/new \
-      |   -X POST \
-      |   --form xyz123=@/home/user/images/logo.png \
-      |   --form abc789=@/home/user/music/anthem.m4a
-      |
+      | curl dropsha.re/files/new -X POST --form xyz123=@/home/user/images/logo.png --form abc789=@/home/user/music/anthem.m4a
+      |\n
       | # response
       | {
       |     "error": false
