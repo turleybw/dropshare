@@ -1,7 +1,8 @@
+/*jshint node:true strict:true es5:true laxcomma:true*/
 (function () {
   "use strict";
 
-  var dropshare = require('./lib/index')
+  var dropshare = require('./server/lib/index')
     , config = require('./config')
     , options = {
           "tmp": "/tmp"
@@ -18,6 +19,7 @@
     options[attributeName] = config[attributeName];
   }
 
-  app = dropshare.create(options)
+  app = dropshare.create(options);
+
   module.exports = app;
 }());

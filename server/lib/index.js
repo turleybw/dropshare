@@ -1,3 +1,4 @@
+/*jshint laxcomma:true es5:true node:true */
 (function () {
   "use strict";
   /**
@@ -31,7 +32,7 @@
       ;
 
     if (!Array.isArray(req.body)) {
-      var err = {
+      err = {
         "result": "error",
         "data": "Must be an array of file metadata."
       };
@@ -312,18 +313,11 @@
   function create(options) {
 
     var filesDirStats
+      , bP = connect.bodyParser()
       ;
 
     function router(app) {
-      /*
-      app.get('/fs-meta', getAllFsFilesInfo);
-      app.get('/fs-meta/*', getFsFileInfo);
-      app.delete('/fs-meta/*', removeFile);
-      app.get('/fs/*', getFsFile);
-      app.post('/fs/*', createFsFile);
-      app.put('/fs/*', createFsFile);
-      */
-
+      // TODO permanent files?
       app.post('/meta/new', createIds);
       app.get('/meta/:id', getMetadata);
       app.delete('/meta/:id', removeFile);
@@ -336,6 +330,7 @@
     }
 
     function modifiedBodyParser(req, res, next) {
+      // don't allow this instance to parse forms, but allow other instances the pleasure
       var multi = connect.bodyParser.parse['multipart/form-data'];
       connect.bodyParser.parse['multipart/form-data'] = undefined;
       bP(req, res, function () {
@@ -377,9 +372,6 @@
       app.use(connect.json());
       app.use(connect.urlencoded());
     } else {
-      // XXX Trickery to get around connect 1.7 vs 1.8 vs 2.x issues
-      var bP = connect.bodyParser();
-
       app.use(modifiedBodyParser);
     }
     app.use(connect.query());

@@ -80,9 +80,9 @@ Quick Start for Running your own DropShare
         launchctl load -w ~/Library/LaunchAgents/io.redis.redis-server.plist
         # see notes below
 
-  0. Install [Spark](https://github.com/senchalabs/spark), `jade`, [Pakmanager](https://github.com/coolaj86/node-pakmanager), and `less`.
+  0. Install `jade`, [Pakmanager](https://github.com/coolaj86/node-pakmanager), `less`, and some other fun things.
 
-        npm install -g jade less pakmanager
+        npm install -g jade less pakmanager uglify-js
 
   0. Install dropshare in your webapps directory (I use [connect-vhoster](https://github.com/coolaj86/connect-vhoster))
 
