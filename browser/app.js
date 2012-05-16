@@ -271,7 +271,30 @@
 
       name = name || data.result.name || data.result.fileName;
 
-      url = location.protocol + '//' + location.host + location.pathname + 'files/' + id + '/' + name
+      url = location.protocol + '//' + location.host + location.pathname + 'files/' + id + '/' + name;
+
+      // if we already added something to #itemview, remove it.
+      if( $('#itemview').children().length > 0 ) {
+        $('#itemview').children().remove();
+      }
+
+      // show content based on type
+      var filetype = url.split('.').pop();
+      switch(filetype) {
+        case 'jpg':
+        case 'png':
+        case 'gif':
+        case 'tif':
+          $('#itemview').prepend('<img src="' + url + '" />');
+        break;
+        case 'mp3':
+          $('#itemview').prepend('<audio controls="controls"><source src="' + url + '" type="audio/mp3" /></audio>');
+        break;
+        case 'mp4':
+          $('#itemview').prepend('<video controls="controls"><source src="' + url + '" type="video/mp4" /></video>');
+        break;
+      }
+
       $('.js-dnd').attr('href', url);
       $('.js-dnd').attr('data-downloadurl', type + ':' + decodeURIComponent(name) + ':' + url);
       $('#js-loading').hide();

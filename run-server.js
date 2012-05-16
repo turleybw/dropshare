@@ -1,8 +1,9 @@
+/*jshint node:true laxcomma:true*/
 (function () {
   "use strict";
 
   var config = require('./config')
-    , app = require('./server')
+    , app = require('./server.js')
     ;
 
   function run() {
