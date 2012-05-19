@@ -23,7 +23,7 @@
   },
   "bin": {
     "dropshare-server": "bin/dropshare-server.js"
-  }
+  },
   "dependencies": {
       "connect": "*"
     , "connect_router": ">= 1"
