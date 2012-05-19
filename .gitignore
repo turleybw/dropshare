@@ -4,3 +4,4 @@ files
 *.swp
 *.swo
 config.js
+db.json

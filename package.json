@@ -37,6 +37,7 @@
     , "numeric-buffer": "0.1.x"
     , "dom-storage": "1.x"
     , "json-storage": "1.x"
+    , "mkdirp": "0.3.x"
   },
   "devDependencies": {}
 }

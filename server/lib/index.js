@@ -7,6 +7,7 @@
 
   var connect = require('connect')
     , fs = require('fs.extra')
+    , mkdirp = require('mkdirp')
     , assert = require('assert')
     , Futures = require('futures')
     , Formaline = require('formaline')
@@ -352,6 +353,7 @@
 
     // Make sure filesDir exists and is writable
     try {
+      mkdirp.sync(filesDir);
       filesDirStats = fs.statSync(filesDir);
       if (!filesDirStats.isDirectory()) {
         throw new Error('Storage path is not a directory!');
@@ -387,6 +389,7 @@
       // Production
       //, connect.errorHandler()
 
+    app.filesDir = filesDir;
     return app;
   }
 

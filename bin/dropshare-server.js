@@ -14,6 +14,7 @@
       ;
 
     console.log("Dropshare listening on http://%s:%d", addr.address, addr.port);
+    console.log("Saving files to " + app.filesDir);
   }
 
   /*
