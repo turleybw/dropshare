@@ -8,6 +8,7 @@
           "tmp": "/tmp"
         , "storageDir": __dirname + "/files"
         , "client": __dirname + "/public"
+        //, "databaseStrategy": "json"
       }
     , app
     , attributeName

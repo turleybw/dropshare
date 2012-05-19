@@ -341,10 +341,12 @@
 
 
     options = options || {};
+    options.databaseStrategy = options.databaseStrategy || 'redis';
+    options[options.databaseStrategy] = options[options.databaseStrategy] || {};
 
     // there could potentially be a race condition here at startup
     // should be negligible
-    storage = require('./redis-wrapper').create(options.redis || {});
+    storage = require('./db/' + options.databaseStrategy + '-wrapper').create(options[options.databaseStrategy]);
 
     filesDir = options.storageDir || options.files || filesDir;
 

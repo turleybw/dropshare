@@ -2,7 +2,7 @@
   "author": "AJ ONeal <coolaj86@gmail.com> (http://coolaj86.info/)",
   "name": "dropshare",
   "description": "A ge.tt / min.us clone for your private servers",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "homepage": "dropshare.coolaj86.info",
   "contributors": [
     {
@@ -12,7 +12,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/coolaj86/dropshare.git"
+    "url": "git://github.com/SpotterRF/dropshare.git"
   },
   "main": "server/lib/index",
   "scripts": {
@@ -21,6 +21,9 @@
   "engines": {
     "node": ">= 0.6"
   },
+  "bin": {
+    "dropshare-server": "bin/dropshare-server.js"
+  }
   "dependencies": {
       "connect": "*"
     , "connect_router": ">= 1"
@@ -32,6 +35,8 @@
     , "futures": "2.3.x"
     , "formaline": "0.6.x"
     , "numeric-buffer": "0.1.x"
+    , "dom-storage": "1.x"
+    , "json-storage": "1.x"
   },
   "devDependencies": {}
 }

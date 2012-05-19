@@ -104,9 +104,9 @@ Quick Start for Running your own DropShare
         ./deploy.sh
         cd ..
 
-  0. Start the server with `spark`. By default it runs on port 3700 (but if it's different, you'll see it).
+  0. Start the server. By default it runs on port 3700 (but if it's different, you'll see it).
 
-        node run-server.js
+        node bin/dropshare-server.js
 
 
 Server Parameters
