@@ -152,9 +152,7 @@
         });
       }
       // If metadata exists, then move the file and update the metadata with the new path
-      setTimeout(function () {
-        res = self._fileDb.put(onStored, formPart.value[0]);
-      }, 1000);
+      res = self._fileDb.put(onStored, formPart.value[0]);
     });
   };
 
@@ -196,14 +194,11 @@
 
           , 'loadend': function (json, res, callback) {
               console.log('\njson is\n', json);
-              // because sometimes loadend fires too fast?
-              setTimeout(function () {
-                try {
-                  callback(json, res);
-                } catch ( err ) {
-                  console.error( 'error', err.stack );
-                }
-              }, 1000);
+              try {
+                callback(json, res);
+              } catch ( err ) {
+                console.error( 'error', err.stack );
+              }
             }
 
           , 'error': function (err) {
@@ -222,10 +217,7 @@
       var args = Array.prototype.slice.call(arguments)
         ;
 
-      console.log('parser args', args);
-      setTimeout(function () {
-        self.handleUploadedFiles.apply(self, args);
-      }, 1000);
+      self.handleUploadedFiles.apply(self, args);
     });
   };
 
