@@ -1,4 +1,4 @@
-/*jshint laxcomma:true es5:true node:true */
+/*jshint laxcomma:true es5:true node:true onevar:true*/
 (function () {
   "use strict";
   /**
@@ -7,29 +7,73 @@
 
   var connect = require('connect')
     , fs = require('fs.extra')
+    , path = require('path')
     , mkdirp = require('mkdirp')
     , assert = require('assert')
-    , Futures = require('futures')
+    , forEachAsync = require('forEachAsync')
     , Formaline = require('formaline')
+    , FileDb = require('./file-db')
+      // TODO use different strategies - words
       // The DropShare Epoch -- 1320969600000 -- Fri, 11 Nov 2011 00:00:00 GMT
     , generateId = require('./gen-id').create(1320769600000)
-    , storage
-    , filesDir = __dirname + '/../files'
-    , allowUserSpecifiedIds = false
-    , app
     ;
 
   connect.cors = require('connect-cors');
 
+  function Dropshare(options) {
+    var self = this
+      , filesDirStats
+      , allowUserSpecifiedIds = false
+      ;
+
+    self.filesDir = path.join(__dirname, '..', 'files');
+    self.filesDir = options.storageDir || options.files || self.filesDir;
+
+    self.clientDir = options.client || (__dirname + '/../public');
+    self._fileDb = FileDb.create(self.filesDir, self.clientDir);
+
+    options = options || {};
+    options.databaseStrategy = options.databaseStrategy || 'redis';
+    options[options.databaseStrategy] = options[options.databaseStrategy] || {};
+
+    // there could potentially be a race condition here at startup
+    // should be negligible
+    self._storage = require('./db/' + options.databaseStrategy + '-wrapper').create(options[options.databaseStrategy]);
+
+
+    // Make sure filesDir exists and is writable
+    try {
+      mkdirp.sync(self.filesDir);
+      filesDirStats = fs.statSync(self.filesDir);
+      if (!filesDirStats.isDirectory()) {
+        throw new Error('Storage path is not a directory!');
+      }
+    }
+    catch (e) {
+      console.warn('Storage directory is not writeable or does not exist: ' + e.path);
+      console.warn('error: ' + e.errno + ' code: ' + e.code);
+      process.exit(1);
+    }
+
+    if (options.allowUserSpecifiedIds) {
+      self._allowUserSpecifiedIds = true;
+    }
+
+    return createApiServer(self);
+  }
+  Dropshare.create = function (a, b, c) {
+    return new Dropshare(a, b, c);
+  };
+
   // Routes
-  function createIds(req, res, next) {
+  Dropshare.prototype.createIds = function (req, res, next) {
     var i
-      , sequence = Futures.sequence()
       , ids = []
       , id
       , meta
       , err
       , now = Date.now()
+      , self = this
       ;
 
     if (!Array.isArray(req.body)) {
@@ -43,128 +87,106 @@
     }
 
     // TODO use forEachAsync
-    req.body.forEach(function (meta, i) {
+    forEachAsync(req.body, function (next, meta, i) {
       meta.timestamp = now;
-      if (allowUserSpecifiedIds && meta.id) {
+      if (self._allowUserSpecifiedIds && meta.id) {
         id = meta.id;
       }
       else {
         id = generateId();
       }
-      //Dang for loops and closures
-      (function (fileId) {
-        sequence.then(function (next) {
-          storage.set(fileId, meta, function (err, data) {
-            ids.push(fileId);
-            next();
-          });
-        });
-      })(id);
-    });
-
-    sequence.then(function (next) {
+      self._storage.set(id, meta, function (err, data) {
+        ids.push(id);
+        next();
+      });
+    }).then(function (next) {
       res.writeHead(200, {'content-type': 'application/json'});
       res.write(JSON.stringify(ids));
       res.end();
       next();
     });
-  }
+  };
 
-  function handleUploadedFiles (json, res) {
+  Dropshare.prototype.handleUploadedFiles = function (json, res) {
     var responses = []
       , sequence = require('sequence')()
+      , self = this
       ;
 
-    json.files.forEach(function (fileObj) {
-      (function (fileData) {
-        sequence.then(function (next) {
-          handleUploadedFile(fileData, function (response) {
-            responses.push(response);
-            next();
-          });
-        });
-      })(fileObj);
-    });
+    forEachAsync(json.files, function (next, fileData) {
+      function pushResponse(response) {
+        responses.push(response);
+        next();
+      }
 
-    sequence.then(function (next) {
+      self.handleUploadedFile(pushResponse, fileData);
+    }).then(function () {
       res.writeHead(200, {"content-type": "application/json"});
       res.end(formatFileUploadResponses(responses));
-      next();
     });
-  }
+  };
 
-  function handleUploadedFile (file, cb) {
+  Dropshare.prototype.handleUploadedFile = function (cb, formPart) {
+    var self = this
+      ;
+
     // Check that metadata exists for this ID
-    storage.get(file.name, function (err, result) {
-      var response;
+    self._storage.get(formPart.name, function (err, result) {
+      var response
+        , res
+        ;
+
       if (err !== null || result === null) {
         cb({
           "result": "error",
-          "data": "No metadata for id '" + file.name + "'."
+          "data": "No metadata for id '" + formPart.name + "'."
         });
         return;
       }
 
+      function onStored(err, fileStoreKey, file) {
+        self._addSha1ToMetaData(formPart.name, fileStoreKey, file);
+        cb({
+          "result": "success",
+          "data": "File " + formPart.name + " stored successfully."
+        });
+      }
       // If metadata exists, then move the file and update the metadata with the new path
-      var res = moveFileToStorage(file.name, file.value[0], cb({
-        "result": "success",
-        "data": "File " + file.name + " stored successfully."
-      }));
+      setTimeout(function () {
+        res = self._fileDb.put(onStored, formPart.value[0]);
+      }, 1000);
     });
-  }
+  };
 
-  function moveFileToStorage(fileId, file) {
-    var is
-      , os
-      , newFilePath = filesDir + '/' + file.sha1checksum
+  Dropshare.prototype._addSha1ToMetaData = function (id, fileStoreKey, file) {
+    var self = this
       ;
 
-    fs.stat(file.path, function (err, stat) {
-      assert.strictEqual(err, null, "tried to move a non-existent file");
-
-      //check if file with same checksum already exists
-      fs.stat(newFilePath, function (statErr, stat) {
-        if (typeof stat === "undefined") {
-          // File does not exist already, so move it in to place
-          fs.move(file.path, newFilePath, function (movErr) {
-            if (movErr) {
-              console.warn('Error moving file to storage: ' + movErr.toString());
-              //throw err;
-            }
-
-          });
-        }
-        else {
-        }
-
-        addSHA1ToMetadata(fileId, file.sha1checksum);
-      });
-    });
-  }
-
-  function addSHA1ToMetadata(id, checksum) {
-    storage.get(id, function (err, data, isJSON) {
+    self._storage.get(id, function (err, data, isJSON) {
       assert.ok(isJSON, "Metadata is not JSON");
 
-      data.sha1checksum = checksum;
-      storage.set(id, data, function (err, res) {
+      data.sha1checksum = file.sha1checksum;
+      data.fileStoreKey = fileStoreKey;
+      self._storage.set(id, data, function (err, res) {
         assert.deepEqual(err, null, "Error storing metadata again.");
       });
     });
-  }
+  };
 
   function formatFileUploadResponses (responses) {
     return JSON.stringify(responses);
   }
 
-  function receiveFiles(req, res, next) {
+  Dropshare.prototype.receiveFiles = function(req, res, next) {
     var form
       , config
+      , self = this
       ;
 
     config = {
         sha1sum: true
       , removeIncompleteFiles: true
+        // 1TiB... yep
       , uploadThreshold: 1024 * 1024 * 1024
       , listeners: {
             'fileprogress': function (ev, chunk) {
@@ -174,11 +196,14 @@
 
           , 'loadend': function (json, res, callback) {
               console.log('\njson is\n', json);
-              try {
-                callback(json, res);
-              } catch ( err ) {
-                console.error( 'error', err.stack );
-              }
+              // because sometimes loadend fires too fast?
+              setTimeout(function () {
+                try {
+                  callback(json, res);
+                } catch ( err ) {
+                  console.error( 'error', err.stack );
+                }
+              }, 1000);
             }
 
           , 'error': function (err) {
@@ -193,49 +218,81 @@
     // XXX Trickery to get around connect 1.7 vs 1.8 vs 2.x issues
     req.body = undefined;
     form = new Formaline(config);
-    form.parse(req, res, handleUploadedFiles);
-  }
+    form.parse(req, res, function () {
+      var args = Array.prototype.slice.call(arguments)
+        ;
 
-  function checkForFileExistence(req, res, err, data) {
-    if (err || data === null || typeof(data.sha1checksum) === "undefined") {
-      res.writeHead(400, {'content-type': 'application/json'});
-      res.write(JSON.stringify({
-        "result": "error",
-        "data": "No files uploaded for " + req.params.id + "."
-      }));
-      res.end();
-      return false;
+      console.log('parser args', args);
+      setTimeout(function () {
+        self.handleUploadedFiles.apply(self, args);
+      }, 1000);
+    });
+  };
+
+  Dropshare.prototype._isFileMarkedAsUploadSuccessful = function (req, res, err, data) {
+    if (!err && data && 'undefined' !== typeof data.fileStoreKey) {
+      return true;
     }
-    return true;
-  }
 
-  function sendFile(req, res, next) {
-    storage.get(req.params.id, function (err, data) {
-      if (!checkForFileExistence(req, res, err, data)) {
+    // TODO use steve
+    res.writeHead(400, {'content-type': 'application/json'});
+    res.write(JSON.stringify({
+      "success": false,
+      "errors": ["No file uploaded or upload incomplete for " + req.params.id + "."],
+    }));
+    res.end();
+    return false;
+  };
+
+  Dropshare.prototype.redirectToFile = function (req, res, next) {
+    var self = this
+      ;
+
+    self.sendFile(req, res, next);
+  };
+
+  Dropshare.prototype.sendFile = function (req, res, next) {
+    var self = this
+      , fileStoreKey = req.params.id
+      , filename = req.params.filename || fileStoreKey
+      ;
+
+    self._storage.get(req.params.id, function (err, data) {
+      var newHttpLocation = path.join('tmpfs-' + data.fileStoreKey + '-' + filename)
+        , newLocation = path.join(self.clientDir, newHttpLocation)
+        ;
+
+      if (!self._isFileMarkedAsUploadSuccessful(req, res, err, data)) {
         return;
       }
 
-      fs.readFile(filesDir + '/' + data.sha1checksum, function (err, fileData) {
+      function redirectNow(err) {
+        // TODO distinguish between good existing link and a bad upload
+        /*
         if (err) {
-          console.warn('trying to get a file that\'s probably deleted');
-          res.end(JSON.stringify({
-              'error': true
-            , 'result': 'error'
-            , 'errors': ['No file found for ' + req.params.id + '.']
-          }), 500);
+          // Just a cheap shortcut. Needs own message
+          self._isFileMarkedAsUploadSuccessful(req, res, err, {});
           return;
         }
+        */
 
-        res.writeHead(200, {'content-type': data.type });
-        res.write(fileData);
-        res.end();
-      });
+        // this needs to be mountable and work when linking from another site
+        // hence we discover the mountpoint by inspecting the url and knowing the API
+        var mountMatch = /(.*)\/files\//.exec(req.url)
+          ;
 
+        res.writeHead(302, { 'Location':  mountMatch[1] + '/' + newHttpLocation });
+        res.end("<a href=" + newHttpLocation + ">" + newHttpLocation + "</a>");
+      }
+      self._fileDb.link(redirectNow, data.fileStoreKey, newLocation);
     });
-  }
+  };
 
-  function getMetadata(req, res, next) {
-    storage.get(req.params.id, function (err, data) {
+  Dropshare.prototype.getMetadata = function(req, res, next) {
+    var self = this
+      ;
+
+    self._storage.get(req.params.id, function (err, data) {
       if (err !== null || data === null) {
         res.writeHead(400, {'content-type': 'application/json'});
         res.end(JSON.stringify({
@@ -255,7 +312,7 @@
       };
       res.end(JSON.stringify(response));
     });
-  }
+  };
 
   // Delete both the metadata and the file on the FS.
   // NOTE: this will break stuff it multiple IDs refer to the same
@@ -267,68 +324,58 @@
 
   // This could be fixed by storing a list of IDs files keyed by
   // the SHA1 hash of the file the refer to.
-  function removeFile(req, res, next) {
+  Dropshare.prototype.removeFile = function (req, res, next) {
     var id = req.params.id
+      , self = this
       ;
 
-    storage.get(id, function (err, data) {
-      if (!checkForFileExistence(req, res, err, data)) {
+    function error(res, data) {
+        res.writeHead(500, {'content-type': 'application/json'});
+        res.write(JSON.stringify({
+          "result": "error",
+          "data": "Error in deleting " + data.id + "."
+        }));
+        res.end();
         return;
-      }
+    }
 
-      function error(res, data) {
-          res.writeHead(500, {'content-type': 'application/json'});
-          res.write(JSON.stringify({
-            "result": "error",
-            "data": "Error in deleting " + data.id + "."
-          }));
-          res.end();
-          return;
-      }
-
-      //Delete from Redis
-      storage.del(id, function (err) {
+    self._storage.get(id, function (err, data) {
+      //Delete from fs
+      function onRemoved(err) {
         if (err) {
           error(res, data);
           return;
         }
 
-        //Delete from fs
-        fs.unlink(filesDir + '/' + data.sha1checksum, function (err) {
-          if (err) {
-            error(res, data);
-            return;
-          }
+        res.writeHead(200, {'content-type': 'application/json'});
+        res.write(JSON.stringify({
+          "result": "success",
+          "data": "Successfully deleted " + req.params.id + "."
+        }));
+        res.end();
+      }
 
-          res.writeHead(200, {'content-type': 'application/json'});
-          res.write(JSON.stringify({
-            "result": "success",
-            "data": "Successfully deleted " + req.params.id + "."
-          }));
-          res.end();
-        });
+      if (!self._isFileMarkedAsUploadSuccessful(req, res, err, data)) {
+        return;
+      }
+
+      //Delete from Db
+      self._storage.del(id, function (err) {
+        if (err) {
+          error(res, data);
+          return;
+        }
+
+        self._fileDb.remove(onRemoved, data.fileStoreKey);
       });
     });
-  }
+  };
 
-  function create(options) {
-
-    var filesDirStats
-      , bP = connect.bodyParser()
+  function createApiServer(dropshare) {
+    var bP = connect.bodyParser()
+      , app
+      , wrappedDropshare = {}
       ;
-
-    function router(app) {
-      // TODO permanent files?
-      app.post('/meta/new', createIds);
-      app.get('/meta/:id', getMetadata);
-      app.delete('/meta/:id', removeFile);
-      // deprecated
-      app.delete('/files/:id', removeFile);
-      app.post('/files/new', createIds);
-
-      app.post('/files', receiveFiles);
-      app.get('/files/:id/:filename?', sendFile);
-    }
 
     function modifiedBodyParser(req, res, next) {
       // don't allow this instance to parse forms, but allow other instances the pleasure
@@ -340,38 +387,29 @@
       });
     }
 
+    function router(app) {
+      // TODO permanent files?
+      app.post('/meta/new', wrappedDropshare.createIds);
+      app.get('/meta/:id', wrappedDropshare.getMetadata);
+      app.delete('/meta/:id', wrappedDropshare.removeFile);
+      // deprecated
+      app.delete('/files/:id', wrappedDropshare.removeFile);
+      app.post('/files/new', wrappedDropshare.createIds);
 
-    options = options || {};
-    options.databaseStrategy = options.databaseStrategy || 'redis';
-    options[options.databaseStrategy] = options[options.databaseStrategy] || {};
-
-    // there could potentially be a race condition here at startup
-    // should be negligible
-    storage = require('./db/' + options.databaseStrategy + '-wrapper').create(options[options.databaseStrategy]);
-
-    filesDir = options.storageDir || options.files || filesDir;
-
-    // Make sure filesDir exists and is writable
-    try {
-      mkdirp.sync(filesDir);
-      filesDirStats = fs.statSync(filesDir);
-      if (!filesDirStats.isDirectory()) {
-        throw new Error('Storage path is not a directory!');
-      }
-    }
-    catch (e) {
-      console.warn('Storage directory is not writeable or does not exist: ' + e.path);
-      console.warn('error: ' + e.errno + ' code: ' + e.code);
-      process.exit(1);
+      app.post('/files', wrappedDropshare.receiveFiles);
+      app.get('/files/:id/:filename?', wrappedDropshare.redirectToFile);
     }
 
-    if (options.allowUserSpecifiedIds) {
-      allowUserSpecifiedIds = true;
-    }
+    // to prevent loss of this-ness
+    ['createIds', 'getMetadata', 'removeFile', 'receiveFiles', 'redirectToFile'].forEach(function (key) {
+      wrappedDropshare[key] = function (req, res, next) {
+        dropshare[key](req, res, next);
+      };
+    });
 
     app = connect();
     app.use(connect.cors());
-    app.use(connect.static(options.client || __dirname + '/../public'));
+    app.use(connect.static(dropshare.clientDir));
     if (connect.json) {
       app.use(connect.json());
       app.use(connect.urlencoded());
@@ -389,9 +427,9 @@
       // Production
       //, connect.errorHandler()
 
-    app.filesDir = filesDir;
+    app.filesDir = dropshare.filesDir;
     return app;
   }
 
-  module.exports.create = create;
+  module.exports = Dropshare;
 }());

@@ -69,6 +69,15 @@ at your Home Office, or Business please contact <coolaj86@gmail.com>.
 Quick Start for Running your own DropShare
 ---
 
+If you don't want to customize it at all you can install it via npm
+
+  0. Download [NodeJS](http://nodejs.org#download)
+  1. `npm install -g dropshare`
+  2. `dropshare-server`
+  3. The database will be in `dropshare/server/lib/db/db.json`
+
+But for production use with a real database
+
   0. Install [NodeJS](http://nodejs.org): [Linux Binary](https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager) | [Linux Source](http://apptob.org) | [OS X | Windows](http://nodejs.org#download).
   0. Install `redis`. See Appendix (below) for installing redis on OS X.
 
