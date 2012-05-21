@@ -105,13 +105,9 @@ But for production use with a real database
         rsync -a config.default.js config.js
 
   0. Download dependencies and compile the static assets.
+     (You may wish to look at `deploy.sh` to understand what it does)
 
-        # get server dependencies
-        npm install # possibly needs `sudo` on linux
-        
-        cd public
-        ./deploy.sh
-        cd ..
+        ./deploy.sh # possibly needs `sudo`
 
   0. Start the server. By default it runs on port 3700 (but if it's different, you'll see it).
 
