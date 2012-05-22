@@ -222,6 +222,11 @@
   };
 
   Dropshare.prototype._isFileMarkedAsUploadSuccessful = function (req, res, err, data) {
+    // backwards compat from when sha1checksum was the key
+    if (!data.fileStoreKey) {
+      data.fileStoreKey = data.sha1checksum;
+    }
+
     if (!err && data && 'undefined' !== typeof data.fileStoreKey) {
       return true;
     }
@@ -246,17 +251,23 @@
   Dropshare.prototype.sendFile = function (req, res, next) {
     var self = this
       , fileStoreKey = req.params.id
-      , filename = req.params.filename || fileStoreKey
+      , dbId = req.params.id
       ;
 
-    self._storage.get(req.params.id, function (err, data) {
-      var newHttpLocation = path.join('tmpfs-' + data.fileStoreKey + '-' + filename)
-        , newLocation = path.join(self.clientDir, newHttpLocation)
-        ;
-
+    self._storage.get(dbId, function (err, data) {
       if (!self._isFileMarkedAsUploadSuccessful(req, res, err, data)) {
         return;
       }
+
+      // backwards compat from when sha1checksum was the key
+      if (!data.fileStoreKey) {
+        data.fileStoreKey = data.sha1checksum;
+      }
+
+      var newHttpLocation
+        , newDir
+        , filename
+        ;
 
       function redirectNow(err) {
         // TODO distinguish between good existing link and a bad upload
@@ -274,9 +285,13 @@
           ;
 
         res.writeHead(302, { 'Location':  mountMatch[1] + '/' + newHttpLocation });
-        res.end("<a href=" + newHttpLocation + ">" + newHttpLocation + "</a>");
+        res.end("<a href=" + mountMatch[1] + '/' + newHttpLocation + ">" + newHttpLocation + "</a>");
       }
-      self._fileDb.link(redirectNow, data.fileStoreKey, newLocation);
+
+      newDir = path.join(self.clientDir, 'tmpfs', dbId);
+      filename = (req.params.filename || data.name || fileStoreKey).replace(/ /g, '-');
+      newHttpLocation = 'tmpfs/' + dbId + '/' + filename;
+      self._fileDb.link(redirectNow, data.fileStoreKey, newDir, filename);
     });
   };
 
@@ -349,6 +364,11 @@
 
       if (!self._isFileMarkedAsUploadSuccessful(req, res, err, data)) {
         return;
+      }
+
+      // backwards compat
+      if (!data.fileStoreKey) {
+        data.fileStoreKey = data.sha1checksum;
       }
 
       //Delete from Db
