@@ -68,7 +68,6 @@
       , newDir = path.join(toDir)
       ;
 
-    console.log('toDir', toDir);
     mkdirp(toDir, function (err) {
       if (err) {
         cb(err);
