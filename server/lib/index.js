@@ -389,6 +389,8 @@
       app.post('/files/new', wrappedDropshare.createIds);
 
       app.post('/files', wrappedDropshare.receiveFiles);
+
+      // this must remain hard-coded for now. it's tied to the logic for figuring out the mointpoint
       app.get('/files/:id/:filename?', wrappedDropshare.redirectToFile);
     }
 
