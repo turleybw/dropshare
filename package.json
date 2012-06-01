@@ -38,7 +38,8 @@
     "dom-storage": "1.x",
     "json-storage": "1.x",
     "mkdirp": "0.3.x",
-    "forEachAsync": "~2.1.1"
+    "forEachAsync": "2.x",
+    "fs-extra": "0.1.x"
   },
   "devDependencies": {}
 }
