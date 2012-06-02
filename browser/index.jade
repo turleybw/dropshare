@@ -8,10 +8,10 @@ html
     link(href='http://fonts.googleapis.com/css?family=Rammetto+One',rel='stylesheet',type='text/css')
     script(src='pakmanaged.js')
   body
-    img#beta-banner(src='images/beta.png')
-    #content
+    img#css-beta-banner(src='images/beta.png')
+    #css-content
 
-      ul#main-tabs.tabs
+      ul#css-main-tabs.tabs
         li.js-tab.js-index.js-drop
           a(href='#/drop')
             span.button.black Dropshare
@@ -29,10 +29,10 @@ html
           a(href='#/api')
             span.button.green API
 
-      #app
+      #css-app
         //- this needs to be first for google indexing
-        #howitworks.js-uiview.uiview.js-howitworks
-          header.section How It Works
+        #css-howitworks.js-uiview.css-uiview.js-howitworks
+          header.css-section How It Works
           a(href='http://xkcd.com/949/',target='_blank')
             img(src='http://imgs.xkcd.com/comics/file_transfer.png'
               , alt='File Transfer'
@@ -53,8 +53,8 @@ html
         include includes/share.jade
 
         //-
-          #about.js-uiview.uiview.js-about
-            header.section About
+          #css-about.js-uiview.css-uiview.js-about
+            header.css-section About
             | Basically ge.tt and min.us were taking too long
             | coming up with an API, so we built it ourselves.
             br
@@ -63,7 +63,7 @@ html
 
         include includes/api.jade
 
-        #pricing.js-uiview.uiview.js-pricing
+        #css-pricing.js-uiview.css-uiview.js-pricing
           header.section Pricing
           | Contact for a consultation on these options
           ul
@@ -72,13 +72,13 @@ html
             li Physical appliance
             li DIY installation (see Github)
 
-        #legalese.js-uiview.uiview.js-legalese
+        #css-legalese.js-uiview.css-uiview.js-legalese
           header Legalese
           | This is for personal / private use. Don't share copyrighted material. Duh.
           br
           | Don't abuse the service.
 
-        #contact.js-uiview.uiview.js-contact
+        #css-contact.js-uiview.css-uiview.js-contact
           header.section Contact
           ul
             li AJ ONeal &lt;coolaj86@gmail.com&gt; (http://coolaj86.info)
@@ -86,7 +86,7 @@ html
 
         br
 
-      ul#foot-tabs.tabs
+      ul#css-foot-tabs.css-tabs
         li.js-tab.js-contact
           a.button.small.white(href='#/contact') Contact
         li
