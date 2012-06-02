@@ -5,7 +5,6 @@
   var fs = require('fs.extra')
     , path = require('path')
     , assert = require('assert')
-    , mkdirp = require('mkdirp')
     ;
 
   function FileDb(privateDir) {
@@ -68,7 +67,7 @@
       , newDir = path.join(toDir)
       ;
 
-    mkdirp(toDir, function (err) {
+    fs.mkdirp(toDir, function (err) {
       if (err) {
         cb(err);
         return;

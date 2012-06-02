@@ -2,13 +2,14 @@
 (function () {
   "use strict";
 
-  var dropshare = require('./server/lib/index')
+  var dropshare = require('./server/index')
     , config = require('./config')
     , options = {
           "tmp": "/tmp"
         , "storageDir": __dirname + "/files"
         , "client": __dirname + "/public"
-        //, "databaseStrategy": "json"
+        //, "databaseStrategy": "redis"
+        , "databaseStrategy": "json"
       }
     , app
     , attributeName
