@@ -12,13 +12,13 @@
         , "databaseStrategy": "json"
       }
     , app
-    , attributeName
+    , key
     ;
 
 
   // Use the options provided in the config.js file
-  for (attributeName in config) {
-    options[attributeName] = config[attributeName];
+  for (key in config) {
+    options[key] = config[key];
   }
 
   app = dropshare.create(options);
