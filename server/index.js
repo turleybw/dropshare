@@ -27,9 +27,9 @@
       ;
 
     self.filesDir = path.join(__dirname, '..', 'files');
-    self.filesDir = options.storageDir || options.files || self.filesDir;
+    self.filesDir = options.storageDir || options.files || options.filesDir;
 
-    self.clientDir = options.client || (__dirname + '/../public');
+    self.clientDir = options.client || (path.join(__dirname, '..', 'public'));
     self._fileDb = FileDb.create(self.filesDir, self.clientDir);
 
     options = options || {};
