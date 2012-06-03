@@ -11,10 +11,25 @@
          Name
         input.css-field-author(type='text', placeholder='Your Name')
         label.
+         Tags
+        input.css-field-author(type='text', placeholder='+ add a tag')
+        label.
          description
         textarea.css-field-thumbnail-description
         input(type='submit')
           
+    .js-image-dropzone.css-image-dropzone.css-tall.css-file-zone.css-area.css-interactive
+      //- http://www.softicons.com/free-icons/web-icons/design-cartons-icons-by-sneh-roy/box-drag-and-drop-icon
+      img.css-drop-action-image(src='images/camera.svg',alt='Drag & Drop images')
+      //- TODO find out why this is laggy when placed outside of #dropzone
+      form.js-image-upload.css-upload
+        //- webkitdirectory allows ONLY directories
+        //- input#filechooser.filechooser(name='file',type='file',multiple='multiple')
+    .js-image-uploadzone.css-uploadzone.css-short.js-image-file-zone.css-area.css-interactive
+      button.css-upload.button.gray Open File Browser
+      form.css-upload
+        //- input.filechooser(name='file',type='file',multiple='multiple')
+    
     .js-dropzone.css-dropzone.css-tall.css-file-zone.css-area.css-interactive
       //- http://www.softicons.com/free-icons/web-icons/design-cartons-icons-by-sneh-roy/box-drag-and-drop-icon
       img.css-drop-action-image(src='images/drag-n-drop-box.png',alt='Drag & Drop Files from your Desktop')
@@ -24,8 +39,8 @@
         //- input#filechooser.filechooser(name='file',type='file',multiple='multiple')
     .js-uploadzone.css-uploadzone.css-short.js-file-zone.css-area.css-interactive
       button.css-upload.button.gray Open File Browser
-      form.upload
-        //- input.filechooser(name='file',type='file',multiple='multiple')
+      form.css-upload
+        //- input.filechooser(name='file',type='file',multiple='multiple')        
   .css-share-container
     //-include upshare
     header Share
