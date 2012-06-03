@@ -11,7 +11,10 @@ html
     img#css-beta-banner(src='images/beta.png')
     #css-content
 
-      ul#css-main-tabs.tabs
+      ul#css-main-tabs.css-tabs
+        li.js-tab.js-gallery
+          a(href='#/gallery')
+            span.button.green Gallery
         li.js-tab.js-index.js-drop
           a(href='#/drop')
             span.button.black Dropshare
@@ -31,6 +34,7 @@ html
 
       #css-app
         //- this needs to be first for google indexing
+         
         #css-howitworks.js-uiview.css-uiview.js-howitworks
           header.css-section How It Works
           a(href='http://xkcd.com/949/',target='_blank')
@@ -51,6 +55,7 @@ html
 
         include includes/drop.jade
         include includes/share.jade
+        include includes/gallery.jade
 
         //-
           #css-about.js-uiview.css-uiview.js-about
