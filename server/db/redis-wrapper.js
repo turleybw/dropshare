@@ -1,3 +1,4 @@
+/*jshint strict:true node:true es5:true onevar:true laxcomma:true laxbreak:true*/
 (function () {
   "use strict";
 
@@ -6,7 +7,7 @@
 
   function RedisWrapper(opts) {
 
-    var client;
+    var client
       ;
 
     function createClient(opts) {
@@ -52,12 +53,64 @@
               data = JSON.parse(data);
             }
             catch (e) {
-              console.log('data was not json. hope that is okay');
+              console.warn('data was not json. hope that is okay');
               isJSON = false;
             }
           }
           cb(err, data, isJSON);
         });
+      },
+
+      query: function (query, cb) {
+        var matches = []
+          , self = this
+          , keys
+          ;
+
+        function queryEach(key, obj) {
+     
+          function matchEach(key) {
+            var q = query[key]
+              , v = obj[key]
+              ;
+
+            if (('function' === typeof q && q(v)) || q.test(v)) {
+              matches.push(obj);
+              return true;
+            }
+          }
+
+          obj._id = key;
+          Object.keys(query).some(matchEach);
+        }
+
+        function doQuery(key, i) {
+          /*jshint validthis:true*/
+          try {
+            this[i] = JSON.parse(this[i]);
+          } catch(e) {
+            // ignore
+            console.warn('failed to parse', this[i]);
+          }
+
+          if (!this[i] || 'object' !== typeof this[i]) {
+            // invalid stuff from other db
+            return;
+          }
+          queryEach(key, this[i]);
+        }
+
+        function doMget(err, keys) {
+          function doMatching(err, responses) {
+            keys.forEach(doQuery, responses);
+            cb(null, matches);
+          }
+
+          // TODO only get 1000 at a time
+          client.mget(keys, doMatching);
+        }
+
+        client.keys('*', doMget);
       },
 
       del: function (id, cb) {
@@ -72,7 +125,7 @@
 
   function create(opts) {
     return new RedisWrapper(opts);
-  };
+  }
 
   module.exports.create = create;
 }());

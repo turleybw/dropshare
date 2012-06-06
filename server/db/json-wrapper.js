@@ -18,7 +18,12 @@
       ;
 
     process.nextTick(function () {
-      cb(null, self._store.get(key), true);
+      var val = self._store.get(key)
+        ;
+
+      val._id = key;
+
+      cb(null, val, true);
     });
   };
 
@@ -41,6 +46,39 @@
       if (cb) {
         cb();
       }
+    });
+  };
+
+  JsonDb.prototype.query = function (query, cb) {
+    var matches = []
+      , self = this
+      ;
+
+    function queryEach(key) {
+      /*jshint validthis:true*/
+      var obj = this._store.get(key)
+        ;
+
+      obj._id = key;
+ 
+      function matchEach(key) {
+        var q = query[key]
+          , v = obj[key]
+          ;
+
+        if (('function' === typeof q && q(v)) || q.test(v)) {
+          matches.push(obj);
+          return true;
+        }
+      }
+
+      Object.keys(query).some(matchEach);
+    }
+
+    this._store.keys().forEach(queryEach, this);
+
+    process.nextTick(function () {
+      cb(null, matches);
     });
   };
 

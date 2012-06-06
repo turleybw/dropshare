@@ -27,7 +27,6 @@
       cb(true);
     });
   };
-
   FileDb.prototype.put = function (cb, fileStat) {
     var self = this
       , newFilePath = self._privateDir + '/' + fileStat.sha1checksum
@@ -56,7 +55,6 @@
       });
     });
   };
-
   FileDb.prototype.remove = function (cb, fileStoreKey) {
     fs.unlink(path.join(this._privateDir, fileStoreKey), cb);
   };
