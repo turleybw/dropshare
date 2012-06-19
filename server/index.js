@@ -57,6 +57,8 @@
       , allowUserSpecifiedIds = false
       ;
 
+    // TODO change filesMount regularly (but synchronously)
+    self.filesMount = '/' + String(Math.floor(Math.random() * 1000000000));
     self.filesDir = path.join(__dirname, '..', 'files');
     self.filesDir = options.storageDir || options.files || options.filesDir;
 
@@ -288,6 +290,8 @@
 
     self._storage.get(dbId, function (err, data) {
       if (!self._isFileMarkedAsUploadSuccessful(req, res, err, data)) {
+        // TODO check for progress
+        next();
         return;
       }
 
@@ -296,34 +300,9 @@
         data.fileStoreKey = data.sha1checksum;
       }
 
-      var newHttpLocation
-        , newDir
-        , filename
-        ;
-
-      function redirectNow(err) {
-        // TODO distinguish between good existing link and a bad upload
-        /*
-        if (err) {
-          // Just a cheap shortcut. Needs own message
-          self._isFileMarkedAsUploadSuccessful(req, res, err, {});
-          return;
-        }
-        */
-
-        // this needs to be mountable and work when linking from another site
-        // hence we discover the mountpoint by inspecting the url and knowing the API
-        var mountMatch = /(.*)\/files\//.exec(req.url)
-          ;
-
-        res.writeHead(302, { 'Location':  mountMatch[1] + '/' + newHttpLocation });
-        res.end("<a href=" + mountMatch[1] + '/' + newHttpLocation + ">" + newHttpLocation + "</a>");
-      }
-
-      newDir = path.join(self.clientDir, 'tmpfs', dbId);
-      filename = (req.params.filename || data.name || fileStoreKey).replace(/ /g, '-');
-      newHttpLocation = 'tmpfs/' + dbId + '/' + filename;
-      self._fileDb.link(redirectNow, data.fileStoreKey, newDir, filename);
+      req._preFilesMountUrl = req.url;
+      req.url = self.filesMount + '/' + data.fileStoreKey;
+      next();
     });
   };
 
@@ -523,7 +502,14 @@
     app.use(connect.errorHandler({ dumpExceptions: true, showStack: true }));
       // Production
       //, connect.errorHandler()
-
+    app.use(dropshare.filesMount, connect.static(dropshare.filesDir));
+    app.use(function (req, res, next) {
+      // keep the filesMount undiscoverable, even in an error
+      if (req._preFilesMountUrl) {
+        req.url = req._preFilesMountURl;
+      }
+      next();
+    });
     app.filesDir = dropshare.filesDir;
     return app;
   }
