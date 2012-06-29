@@ -7,97 +7,77 @@ html
     link(rel='stylesheet',href='style.css')
     link(href='http://fonts.googleapis.com/css?family=Rammetto+One',rel='stylesheet',type='text/css')
     script(src='pakmanaged.js')
-  body
-    img#css-beta-banner(src='images/beta.png')
-    #css-content
 
-      ul#css-main-tabs.css-tabs
-        li.js-tab.js-gallery
-          a(href='#/gallery')
-            span.button.green Gallery
-        li.js-tab.js-index.js-drop
-          a(href='#/drop')
-            span.button.black Dropshare
-        li.js-tab.js-howitworks
-          a(href='#/howitworks')
-            span.button.green How it Works
-        li.js-tab.js-pricing
-          a(href='#/pricing')
-            span.button.green Pricing
-        //-
-          li
-            a(href='#/about')
-              span.button.green About
-        li.js-tab.js-api
-          a(href='#/api')
-            span.button.green API
-
-      #css-app
-        //- this needs to be first for google indexing
+  body#wrapper
+      include includes/new-header.jade
+      .content
+          #css-content
+            #css-app
+              include includes/download.jade
+              //- this needs to be first for google indexing
          
-        #css-howitworks.js-uiview.css-uiview.js-howitworks
-          header.css-section How It Works
-          a(href='http://xkcd.com/949/',target='_blank')
-            img(src='http://imgs.xkcd.com/comics/file_transfer.png'
-              , alt='File Transfer'
-              , title="Every time you email a file to yourself so you can pull it up on your friend's laptop, Tim Berners-Lee sheds a single tear.")
-          | Node.JS on the backend. Awesomeness on the frontend
-          br
-          | Many thanks to:
-          ul
-            li
-              a(href='http://subtlepatterns.com/?paged=3')
-                | Subtle Patterns
-            li
-              a(herf='http://webdesignerwall.com/tutorials/css3-gradient-buttons')
-                | WebDesignerWall: CSS Buttons
-          | 'Nuff said.
+              #css-howitworks.js-uiview.css-uiview.js-howitworks
+                header.css-section How It Works
+                a(href='http://xkcd.com/949/',target='_blank')
+                  img(src='http://imgs.xkcd.com/comics/file_transfer.png'
+                    , alt='File Transfer'
+                    , title="Every time you email a file to yourself so you can pull it up on your friend's laptop, Tim Berners-Lee sheds a single tear.")
+                | Node.JS on the backend. Awesomeness on the frontend
+                br
+                | Many thanks to:
+                ul
+                  li
+                    a(href='http://subtlepatterns.com/?paged=3')
+                      | Subtle Patterns
+                  li
+                    a(herf='http://webdesignerwall.com/tutorials/css3-gradient-buttons')
+                      | WebDesignerWall: CSS Buttons
 
-        include includes/drop.jade
-        include includes/share.jade
-        include includes/gallery.jade
+              include includes/drop.jade
+              include includes/share.jade
+              include includes/gallery.jade
+              
 
-        //-
-          #css-about.js-uiview.css-uiview.js-about
-            header.css-section About
-            | Basically ge.tt and min.us were taking too long
-            | coming up with an API, so we built it ourselves.
-            br
-            | As an extra perk, Dropshare can be installed on
-            | private servers.
+              //-
+                #css-about.js-uiview.css-uiview.js-about
+                  header.css-section About
+                  | Basically ge.tt and min.us were taking too long
+                  | coming up with an API, so we built it ourselves.
+                  br
+                  | As an extra perk, Dropshare can be installed on
+                  | private servers.
 
-        include includes/api.jade
+              include includes/api.jade
 
-        #css-pricing.js-uiview.css-uiview.js-pricing
-          header.section Pricing
-          | Contact for a consultation on these options
-          ul
-            li Full remote installation support
-            li Dedicated cloud appliance
-            li Physical appliance
-            li DIY installation (see Github)
+              #css-pricing.js-uiview.css-uiview.js-pricing
+                header.section Pricing
+                | Contact for a consultation on these options
+                ul
+                  li Full remote installation support
+                  li Dedicated cloud appliance
+                  li Physical appliance
+                  li DIY installation (see Github)
 
-        #css-legalese.js-uiview.css-uiview.js-legalese
-          header Legalese
-          | This is for personal / private use. Don't share copyrighted material. Duh.
-          br
-          | Don't abuse the service.
+              #css-legalese.js-uiview.css-uiview.js-legalese
+                header Legalese
+                | This is for personal / private use. Don't share copyrighted material. Duh.
+                br
+                | Don't abuse the service.
 
-        #css-contact.js-uiview.css-uiview.js-contact
-          header.section Contact
-          ul
-            li AJ ONeal &lt;coolaj86@gmail.com&gt; (http://coolaj86.info)
-            li Jamison Dance &lt;jergason&gt; (http://jamisondance.com)
+              #css-contact.js-uiview.css-uiview.js-contact
+                header.section Contact
+                ul
+                  li AJ ONeal &lt;coolaj86@gmail.com&gt; (http://coolaj86.info)
+                  li Jamison Dance &lt;jergason&gt; (http://jamisondance.com)
 
-        br
+              br
 
-      ul#css-foot-tabs.css-tabs
-        li.js-tab.js-contact
-          a.button.small.white(href='#/contact') Contact
-        li
-          a.button.small.gray(href='http://github.com/SpotterRF/dropshare',target='_blank') fork on Github
-        li.js-tab.js-legalese
-          a.button.small.white(href='#/legalese') Legalese
-
-      footer
-        | Copyright 2011 Dropshare
+    ul#css-foot-tabs.css-tabs
+      li.js-tab.js-contact
+        a.button.small.white(href='#/contact') Contact
+      li
+        a.button.small.gray(href='http://github.com/SpotterRF/dropshare',target='_blank') fork on Github
+      li.js-tab.js-legalese
+        a.button.small.white(href='#/legalese') Legalese
+    footer
+      | Copyright 2011 Dropshare

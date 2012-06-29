@@ -1,24 +1,50 @@
+@import "stylesheets/buttons";
+@import "stylesheets/download";
+@import "stylesheets/header";
+body{
+font-family:'Arial', Helvetica, sans-serif;
+	margin-top: 0;
+	margin-bottom: 0;
+	margin-left: 0;
+	margin-right: 0;
+}
 a{
 	text-decoration:none;
 }
-@import "stylesheets/buttons";
-
-@app-width: 640px;
+@app-width:50px;
 @preview-width: @app-width - 40;
-
-body {
-  background-image:url('images/always-grey.png');
-  text-align: center;
-  color: #999;
-  font-size: 14pt;
+@font-family:Arial, Helvetica, sans-serif;
+#wrapper{
+	height:auto;
+	margin:0px auto 0px auto;
+	width:1080px;
+	-moz-box-shadow: 0 0 5px 5px #d1d1d1;
+	-webkit-box-shadow: 0 0 5px 5px#d1d1d1;
+	box-shadow: 0 0 5px 5px #d1d1d1;
 }
-
+#css-app {
+   background:fff;
+  }
+.content{
+ background:#fff;
+ width:960px;
+ height:auto;
+ margin-left:auto; 
+ margin-right:auto;
+}  
+.css-section{}
+#css-main-tabs{
+  width:960px;
+  margin:0px auto 0px auto;
+  height:auto;
+}
 #css-itemview img {
   max-width: @preview-width;
 }
 
 .css-uiview {
-  text-align: left;
+  background:#red;
+  margin:0px auto 0px auto;
 }
 
 .css-share.css-uiview {
@@ -31,7 +57,6 @@ body {
     font-size: 12px;
   }
 }
-
 #css-beta-banner {
   position: absolute;
   top: 15px;
@@ -39,9 +64,7 @@ body {
 }
 
 header, h1, h2, h3, h4, h5, h6 {
-  font-family: 'Rammetto One', cursive;
-  color: ghostwhite;
-  text-shadow: 2px 2px 2px #000;
+  font-family:Arial, Helvetica, sans-serif;
   text-align: center;
 }
 
@@ -102,7 +125,6 @@ ul.css-uploadlist {
 
 #css-content {
   margin: 0 auto;
-  width: 800px;
   .css-draw-attention {
     font-weight: bold;
   }
@@ -113,19 +135,6 @@ ul.css-uploadlist {
   background-color: ghostwhite;
   background-image: url('images/felt.png');
 }
-
-#css-app {
-  margin: 0 auto;
-  width: @app-width;
-  border-radius: 15px;
-  /* border: 2px dashed red; */
-  background-color: rgba(0,0,0,0.3);
-  /* http://css-class.com/test/css/shadows/box-shadow-blur-offset-light.htm */
-  -webkit-box-shadow:0 0 1em hsla(0, 0%, 0%, 1.0);
-  -moz-box-shadow:0 0 1em hsla(0, 0%, 0%, 1.0);
-  box-shadow:0 0 1em hsla(0, 0%, 0%, 1.0);
-}
-
 .css-drop {
   .css-short {
     height: 20px;
@@ -147,6 +156,7 @@ ul.css-uploadlist {
     }
   }
   .css-share-container {
+    background:#123456;
     .css-tall.css-area.css-interactive {
       overflow: visible;
     }
@@ -170,8 +180,6 @@ ul.css-uploadlist {
   border-radius: 5px;
   cursor: move;
 }
-
-
   /* 
     This snippet was stolen from min.us 
     It looks like it gets the cursor icon to be
@@ -194,9 +202,10 @@ ul.css-uploadlist {
 }
 
 .css-tabs li {
-  display: inline;
-  margin: 10px;
-  padding: 10px;
+  background:#333;
+  display: inline-block;
+  margin:0px;
+  padding: 5px;
 }
 .css-thumbnail-container{
 	display:inline-block;
@@ -254,4 +263,8 @@ ul.css-uploadlist {
 	overflow:hidden;
 	text-overflow:ellipsis;
 }
-
+#css-foot-tabs{
+  background:red;
+  height:50px;
+  width:auto;
+}
