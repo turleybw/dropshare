@@ -2,19 +2,6 @@
   .css-drop-container
     //-include updrop
     header Drop
-    div          
-    .js-image-dropzone.css-image-dropzone.css-tall.css-file-zone.css-area.css-interactive
-      //- http://www.softicons.com/free-icons/web-icons/design-cartons-icons-by-sneh-roy/box-drag-and-drop-icon
-      img.css-drop-action-image(src='images/camera.svg',alt='Drag & Drop images')
-      //- TODO find out why this is laggy when placed outside of #dropzone
-      form.js-image-upload.css-upload
-        //- webkitdirectory allows ONLY directories
-        //- input#filechooser.filechooser(name='file',type='file',multiple='multiple')
-    .js-image-uploadzone.css-uploadzone.css-short.js-image-file-zone.css-area.css-interactive
-      button.css-upload.button.gray Open File Browser
-      form.css-upload
-        //- input.filechooser(name='file',type='file',multiple='multiple')
-    
     .js-dropzone.css-dropzone.css-tall.css-file-zone.css-area.css-interactive
       //- http://www.softicons.com/free-icons/web-icons/design-cartons-icons-by-sneh-roy/box-drag-and-drop-icon
       img.css-drop-action-image(src='images/drag-n-drop-box.png',alt='Drag & Drop Files from your Desktop')
@@ -25,7 +12,7 @@
     .js-uploadzone.css-uploadzone.css-short.js-file-zone.css-area.css-interactive
       button.css-upload.button.gray Open File Browser
       form.css-upload
-        //- input.filechooser(name='file',type='file',multiple='multiple')        
+        //- input.filechooser(name='file',type='file',multiple='multiple')
   .css-share-container
     //-include upshare
     header Share
@@ -36,7 +23,7 @@
     .css-tall.css-area.css-interactive
       .js-no-links
         | As you select files to share, the links will appear here.
-    
+
       //- TODO http://www.nikesh.me/demo/loading.html
       //- http://jimpunk.net/Loading/?page_id=9
       //-img#loading-large(src='images/loading-large.gif')
@@ -47,7 +34,7 @@
           span.css-id.js-id TPL-TOKEN
           span.css-name.js-name TPL-NAME
           a.js-ds-link(href='#/share/TPL-TOKEN') domain.tld/#/share/TPL-TOKEN
-          button.remove-file.js-remove-file X
+          button.css-remove-file.js-remove-file X
           progress.js-progress
             span.js-val 0
             span.css-div /
@@ -55,9 +42,4 @@
           br
           span.js-byte-count
   .css-clear
-  #css-delete-notice.js-delete-notice Files are deleted after 3 days.
-
-    
-   
-  
-  
+  #delete-notice.js-delete-notice Files are deleted after 3 days.
