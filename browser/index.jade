@@ -1,9 +1,16 @@
 !!! 5
 html
   head
+    title DropShare
+    meta(http-equiv="X-UA-Compatible", content="IE=Edge,chrome=1")
     //if IE
       script
-        alert('Your version of Internet Explorer is out-of-date and or buggy. Please use Chrome or Firefox to use this site.')
+        alert(
+            'Your version of Internet Explorer is out-of-date and or buggy.'
+          + ' Please use Chrome or Firefox to run this application.'
+        );
+    meta(http-equiv="Content-Type", content="text/html; charset=UTF-8")
+    meta(charset="utf-8")
     link(rel='stylesheet',href='style.css')
     link(href='http://fonts.googleapis.com/css?family=Rammetto+One',rel='stylesheet',type='text/css')
     script(src='pakmanaged.js')
@@ -31,58 +38,14 @@ html
 
       #app
         //- this needs to be first for google indexing
-        #howitworks.js-uiview.uiview.js-howitworks
-          header.section How It Works
-          a(href='http://xkcd.com/949/',target='_blank')
-            img(src='http://imgs.xkcd.com/comics/file_transfer.png'
-              , alt='File Transfer'
-              , title="Every time you email a file to yourself so you can pull it up on your friend's laptop, Tim Berners-Lee sheds a single tear.")
-          | Node.JS on the backend. Awesomeness on the frontend
-          br
-          | Many thanks to:
-          ul
-            li
-              a(href='http://subtlepatterns.com/?paged=3')
-                | Subtle Patterns
-            li
-              a(herf='http://webdesignerwall.com/tutorials/css3-gradient-buttons')
-                | WebDesignerWall: CSS Buttons
-          | 'Nuff said.
-
+        include includes/howitworks.jade
         include includes/drop.jade
         include includes/share.jade
-
-        //-
-          #about.js-uiview.uiview.js-about
-            header.section About
-            | Basically ge.tt and min.us were taking too long
-            | coming up with an API, so we built it ourselves.
-            br
-            | As an extra perk, Dropshare can be installed on
-            | private servers.
-
+        include includes/about.jade
         include includes/api.jade
-
-        #pricing.js-uiview.uiview.js-pricing
-          header.section Pricing
-          | Contact for a consultation on these options
-          ul
-            li Full remote installation support
-            li Dedicated cloud appliance
-            li Physical appliance
-            li DIY installation (see Github)
-
-        #legalese.js-uiview.uiview.js-legalese
-          header Legalese
-          | This is for personal / private use. Don't share copyrighted material. Duh.
-          br
-          | Don't abuse the service.
-
-        #contact.js-uiview.uiview.js-contact
-          header.section Contact
-          ul
-            li AJ ONeal &lt;coolaj86@gmail.com&gt; (http://coolaj86.info)
-            li Jamison Dance &lt;jergason&gt; (http://jamisondance.com)
+        include includes/pricing.jade
+        include includes/legalese.jade
+        include includes/contact.jade
 
         br
 
@@ -95,4 +58,4 @@ html
           a.button.small.white(href='#/legalese') Legalese
 
       footer
-        | Copyright 2011 Dropshare
+        | Copyright 2011-2012 Dropshare (TM)
