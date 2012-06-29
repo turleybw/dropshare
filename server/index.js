@@ -1,9 +1,12 @@
+/*jshint strict:true node:true es5:true onevar:true laxcomma:true laxbreak:true*/
 /*jshint laxcomma:true es5:true node:true onevar:true*/
 (function () {
   "use strict";
   /**
    * Module dependencies.
    */
+
+  require('http-json').init(require('http'));
 
   var connect = require('connect')
     , fs = require('fs.extra')
@@ -13,12 +16,40 @@
     , forEachAsync = require('forEachAsync')
     , Formaline = require('formaline')
     , FileDb = require('./file-db')
+    , Sequence = require('sequence')
       // TODO use different strategies - words
       // The DropShare Epoch -- 1320969600000 -- Fri, 11 Nov 2011 00:00:00 GMT
     , generateId = require('./gen-id').create(1320769600000)
     ;
 
   connect.cors = require('connect-cors');
+  connect.router = require('connect_router');
+
+  // http://stackoverflow.com/a/6969486/151312
+  function escapeRegExp(str) {
+    return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+  }
+
+  function stringToRegExp(str) {
+    var re
+      , flags = 'gi'
+      ;
+
+    str = str.split('/');
+
+    if ('' === str[0] && /^[gimy]{0,2}$/.test(str[str.length - 1])) {
+      str.shift();
+      flags = str.pop();
+      re = new RegExp(str.join('/'), flags);
+      console.log('is regexp', re);
+    } else {
+      re = new RegExp(escapeRegExp(str.join('/')), 'gi');
+      //return new RegExp("\\s*" + escapeRegExp(str) + "\\s*");
+      console.log('not regexp', re);
+    }
+
+    return re;
+  }
 
   function Dropshare(options) {
     var self = this
@@ -26,10 +57,12 @@
       , allowUserSpecifiedIds = false
       ;
 
+    // TODO change filesMount regularly (but synchronously)
+    self.filesMount = '/' + String(Math.floor(Math.random() * 1000000000));
     self.filesDir = path.join(__dirname, '..', 'files');
-    self.filesDir = options.storageDir || options.files || self.filesDir;
+    self.filesDir = options.storageDir || options.files || options.filesDir;
 
-    self.clientDir = options.client || (__dirname + '/../public');
+    self.clientDir = options.client || (path.join(__dirname, '..', 'public'));
     self._fileDb = FileDb.create(self.filesDir, self.clientDir);
 
     options = options || {};
@@ -76,6 +109,7 @@
       , self = this
       ;
 
+    // TODO use steve
     if (!Array.isArray(req.body)) {
       err = {
         "result": "error",
@@ -86,10 +120,10 @@
       return;
     }
 
-    // TODO use forEachAsync
     forEachAsync(req.body, function (next, meta, i) {
       meta.timestamp = now;
       if (self._allowUserSpecifiedIds && meta.id) {
+        // XXX BUG check for the id first
         id = meta.id;
       }
       else {
@@ -109,7 +143,7 @@
 
   Dropshare.prototype.handleUploadedFiles = function (json, res) {
     var responses = []
-      , sequence = require('sequence')()
+      , sequence = Sequence.create()
       , self = this
       ;
 
@@ -222,6 +256,11 @@
   };
 
   Dropshare.prototype._isFileMarkedAsUploadSuccessful = function (req, res, err, data) {
+    // backwards compat from when sha1checksum was the key
+    if (!data.fileStoreKey) {
+      data.fileStoreKey = data.sha1checksum;
+    }
+
     if (!err && data && 'undefined' !== typeof data.fileStoreKey) {
       return true;
     }
@@ -246,39 +285,66 @@
   Dropshare.prototype.sendFile = function (req, res, next) {
     var self = this
       , fileStoreKey = req.params.id
-      , filename = req.params.filename || fileStoreKey
+      , dbId = req.params.id
       ;
 
-    self._storage.get(req.params.id, function (err, data) {
-      var newHttpLocation = path.join('tmpfs-' + data.fileStoreKey + '-' + filename)
-        , newLocation = path.join(self.clientDir, newHttpLocation)
-        ;
-
+    self._storage.get(dbId, function (err, data) {
       if (!self._isFileMarkedAsUploadSuccessful(req, res, err, data)) {
+        // TODO check for progress
+        next();
         return;
       }
 
-      function redirectNow(err) {
-        // TODO distinguish between good existing link and a bad upload
-        /*
-        if (err) {
-          // Just a cheap shortcut. Needs own message
-          self._isFileMarkedAsUploadSuccessful(req, res, err, {});
-          return;
-        }
-        */
-
-        // this needs to be mountable and work when linking from another site
-        // hence we discover the mountpoint by inspecting the url and knowing the API
-        var mountMatch = /(.*)\/files\//.exec(req.url)
-          ;
-
-        res.writeHead(302, { 'Location':  mountMatch[1] + '/' + newHttpLocation });
-        res.end("<a href=" + newHttpLocation + ">" + newHttpLocation + "</a>");
+      // backwards compat from when sha1checksum was the key
+      if (!data.fileStoreKey) {
+        data.fileStoreKey = data.sha1checksum;
       }
-      self._fileDb.link(redirectNow, data.fileStoreKey, newLocation);
+
+      req._preFilesMountUrl = req.url;
+      req.url = self.filesMount + '/' + data.fileStoreKey;
+      next();
     });
   };
+
+  function yes() {
+    return true;
+  }
+
+  Dropshare.prototype.queryMetadata = function(req, res, next) {
+    var self = this
+      , matches
+      , query = req.query || {}
+      , keys
+      , opts = {}
+      ;
+
+    function answerTheCall(err, matches) {
+      if (err) {
+        // TODO allow null and undefined without triggering an error
+        res.error(err);
+      }
+      res.json(matches, opts);
+    }
+
+    if (query.debug || query.prettyprint) {
+      opts.debug = true;
+      delete query.debug;
+      delete query.prettyprint;
+    }
+
+    keys = Object.keys(query);
+    if (0 === keys.length) {
+      self._storage.query({ alwaysTrue: yes }, answerTheCall);
+      return;
+    }
+
+    keys.forEach(function (key) {
+      query[key] = stringToRegExp(query[key]);
+    });
+
+    self._storage.query(query, answerTheCall);
+  };
+
 
   Dropshare.prototype.getMetadata = function(req, res, next) {
     var self = this
@@ -351,6 +417,11 @@
         return;
       }
 
+      // backwards compat
+      if (!data.fileStoreKey) {
+        data.fileStoreKey = data.sha1checksum;
+      }
+
       //Delete from Db
       self._storage.del(id, function (err) {
         if (err) {
@@ -371,7 +442,9 @@
 
     function modifiedBodyParser(req, res, next) {
       // don't allow this instance to parse forms, but allow other instances the pleasure
-      var multi = connect.bodyParser.parse['multipart/form-data'];
+      var multi = connect.bodyParser.parse['multipart/form-data']
+        ;
+
       connect.bodyParser.parse['multipart/form-data'] = undefined;
       bP(req, res, function () {
         connect.bodyParser.parse['multipart/form-data'] = multi;
@@ -382,18 +455,32 @@
     function router(app) {
       // TODO permanent files?
       app.post('/meta/new', wrappedDropshare.createIds);
+      app.post('/meta', wrappedDropshare.createIds);
+      //app.patch('/meta/:id', wrappedDropshare.updateMetadata);
       app.get('/meta/:id', wrappedDropshare.getMetadata);
+      app.get('/meta', wrappedDropshare.queryMetadata);
       app.delete('/meta/:id', wrappedDropshare.removeFile);
+
       // deprecated
       app.delete('/files/:id', wrappedDropshare.removeFile);
       app.post('/files/new', wrappedDropshare.createIds);
 
       app.post('/files', wrappedDropshare.receiveFiles);
+
+      // this must remain hard-coded for now. it's tied to the logic for figuring out the mointpoint
       app.get('/files/:id/:filename?', wrappedDropshare.redirectToFile);
     }
 
     // to prevent loss of this-ness
-    ['createIds', 'getMetadata', 'removeFile', 'receiveFiles', 'redirectToFile'].forEach(function (key) {
+    [
+        'createIds'
+      , 'getMetadata'
+      , 'queryMetadata'
+      , 'updateMetadata'
+      , 'removeFile'
+      , 'receiveFiles'
+      , 'redirectToFile'
+    ].forEach(function (key) {
       wrappedDropshare[key] = function (req, res, next) {
         dropshare[key](req, res, next);
       };
@@ -409,16 +496,20 @@
       app.use(modifiedBodyParser);
     }
     app.use(connect.query());
-      //, connect.methodOverride()
-    if (!connect.router) {
-      connect.router = require('connect_router');
-    }
+    //, connect.methodOverride()
     app.use(connect.router(router));
       // Development
     app.use(connect.errorHandler({ dumpExceptions: true, showStack: true }));
       // Production
       //, connect.errorHandler()
-
+    app.use(dropshare.filesMount, connect.static(dropshare.filesDir));
+    app.use(function (req, res, next) {
+      // keep the filesMount undiscoverable, even in an error
+      if (req._preFilesMountUrl) {
+        req.url = req._preFilesMountURl;
+      }
+      next();
+    });
     app.filesDir = dropshare.filesDir;
     return app;
   }

@@ -27,7 +27,6 @@
       cb(true);
     });
   };
-
   FileDb.prototype.put = function (cb, fileStat) {
     var self = this
       , newFilePath = self._privateDir + '/' + fileStat.sha1checksum
@@ -56,15 +55,31 @@
       });
     });
   };
-
   FileDb.prototype.remove = function (cb, fileStoreKey) {
     fs.unlink(path.join(this._privateDir, fileStoreKey), cb);
   };
-  FileDb.prototype.link = function (cb, fileStoreKey, toHere) {
+  FileDb.prototype.link = function (cb, fileStoreKey, toDir, toFilename) {
     var self = this
+      , curFile = path.join(self._privateDir, fileStoreKey)
+      , newFile = path.join(toDir, toFilename)
+      , newDir = path.join(toDir)
       ;
 
-    fs.link(path.join(self._privateDir, fileStoreKey), toHere,  cb);
+    fs.mkdirp(toDir, function (err) {
+      if (err) {
+        cb(err);
+        return;
+      }
+      fs.stat(newFile, function (err) {
+        if (!err) {
+          // the place already exists
+          // (and we happen to know it's unique)
+          cb();
+          return;
+        }
+        fs.link(curFile, newFile, cb);
+      });
+    });
   };
   FileDb.create = function (a, b, c) {
     return new FileDb(a, b, c);

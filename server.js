@@ -2,22 +2,23 @@
 (function () {
   "use strict";
 
-  var dropshare = require('./server/lib/index')
+  var dropshare = require('./server/index')
     , config = require('./config')
     , options = {
           "tmp": "/tmp"
         , "storageDir": __dirname + "/files"
         , "client": __dirname + "/public"
-        //, "databaseStrategy": "json"
+        //, "databaseStrategy": "redis"
+        , "databaseStrategy": "json"
       }
     , app
-    , attributeName
+    , key
     ;
 
 
   // Use the options provided in the config.js file
-  for (attributeName in config) {
-    options[attributeName] = config[attributeName];
+  for (key in config) {
+    options[key] = config[key];
   }
 
   app = dropshare.create(options);
