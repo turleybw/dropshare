@@ -1,7 +1,10 @@
+/*jshint strict:true node:true es5:true onevar:true laxcomma:true laxbreak:true eqeqeq:true immed:true latedef:true*/
 (function () {
   "use strict";
 
   console.log('Hello from DropShare!');
+
+  require('./lib/gallery.js');
 
   var $ = require('ender')
     , request = require('ahr2')
