@@ -15,43 +15,47 @@ html
     link(href='http://fonts.googleapis.com/css?family=Rammetto+One',rel='stylesheet',type='text/css')
     script(src='pakmanaged.js')
 
-      ul#css-main-tabs.css-tabs
-        li.js-tab.js-index.js-drop
-          a(href='#/drop')
-            span.button.black Dropshare
-        li.js-tab.js-howitworks
-          a(href='#/howitworks')
-            span.button.green How it Works
-        li.js-tab.js-pricing
-          a(href='#/pricing')
-            span.button.green Pricing
-        //-
-          li
-            a(href='#/about')
-              span.button.green About
-        li.js-tab.js-api
-          a(href='#/api')
-            span.button.green API
-
-      #css-app
-        //- this needs to be first for google indexing
-        include includes/howitworks.jade
-        include includes/drop.jade
-        include includes/share.jade
-        include includes/about.jade
-        include includes/api.jade
-        include includes/pricing.jade
-        include includes/legalese.jade
-        include includes/contact.jade
-        br
-
-      ul#css-foot-tabs.css-tabs
-        li.js-tab.js-contact
-          a.button.small.white(href='#/contact') Contact
+    ul#css-main-tabs.css-tabs
+      li.js-tab.js-index.js-drop
+        a(href='#/drop')
+          span.button.black Dropshare
+      li.js-tab.js-index.js-drop
+        a(href='#/gallery')
+          span.button.black Gallery    
+      li.js-tab.js-howitworks
+        a(href='#/howitworks')
+          span.button.green How it Works
+      li.js-tab.js-pricing
+        a(href='#/pricing')
+          span.button.green Pricing
+      //-
         li
-          a.button.small.gray(href='http://github.com/SpotterRF/dropshare',target='_blank') fork on Github
-        li.js-tab.js-legalese
-          a.button.small.white(href='#/legalese') Legalese
+          a(href='#/about')
+            span.button.green About
+      li.js-tab.js-api
+        a(href='#/api')
+          span.button.green API
 
-      footer
-        | Copyright 2011-2012 Dropshare (TM)
+    #css-app
+      //- this needs to be first for google indexing
+      include includes/gallery.jade
+      include includes/howitworks.jade
+      include includes/drop.jade
+      include includes/share.jade
+      include includes/about.jade
+      include includes/api.jade
+      include includes/pricing.jade
+      include includes/legalese.jade
+      include includes/contact.jade
+      br
+
+    ul#css-foot-tabs.css-tabs
+      li.js-tab.js-contact
+        a.button.small.white(href='#/contact') Contact
+      li
+        a.button.small.gray(href='http://github.com/SpotterRF/dropshare',target='_blank') fork on Github
+      li.js-tab.js-legalese
+        a.button.small.white(href='#/legalese') Legalese
+
+    footer
+      | Copyright 2011-2012 Dropshare (TM)
