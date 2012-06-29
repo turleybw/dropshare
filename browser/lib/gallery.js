@@ -11,7 +11,7 @@
               "obj <-": {
                     ".js-title": "obj.name"
                   , "@href+": "obj._id"
-                  , ".js-description": "obj.path"
+                  , ".js-description": "obj.type"
               }
           }
       }
