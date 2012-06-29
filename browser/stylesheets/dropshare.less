@@ -1,0 +1,268 @@
+body{
+font-family:'Arial', Helvetica, sans-serif;
+	margin-top: 0;
+	margin-bottom: 0;
+	margin-left: 0;
+	margin-right: 0;
+}
+a{
+	text-decoration:none;
+}
+@app-width:50px;
+@preview-width: @app-width - 40;
+@font-family:Arial, Helvetica, sans-serif;
+#wrapper{
+	height:auto;
+	margin:0px auto 0px auto;
+	width:1080px;
+	-moz-box-shadow: 0 0 5px 5px #d1d1d1;
+	-webkit-box-shadow: 0 0 5px 5px#d1d1d1;
+	box-shadow: 0 0 5px 5px #d1d1d1;
+}
+#css-app {
+   background:fff;
+  }
+.content{
+ background:#fff;
+ width:960px;
+ height:auto;
+ margin-left:auto; 
+ margin-right:auto;
+}  
+.css-section{}
+#css-main-tabs{
+  width:960px;
+  margin:0px auto 0px auto;
+  height:auto;
+}
+#css-itemview img {
+  max-width: @preview-width;
+}
+
+.css-uiview {
+  background:#red;
+  margin:0px auto 0px auto;
+}
+
+.css-share.css-uiview {
+  text-align: center;
+}
+
+.css-api {
+  code {
+    font-family: monospace;
+    font-size: 12px;
+  }
+}
+#css-beta-banner {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+}
+
+header, h1, h2, h3, h4, h5, h6 {
+  font-family:Arial, Helvetica, sans-serif;
+  text-align: center;
+}
+
+header {
+  margin-top: 10px;
+  margin-bottom: 5px;
+  font-size: 28pt;
+}
+
+.css-drop-action-image {
+  width: 196px;
+}
+
+.css-clear {
+  clear: both;
+}
+
+ul.css-uploadlist {
+  font-size: 12pt;
+
+  padding: 0;
+  margin-left: 0;
+  margin-top: 0;
+
+  li.css-file-info {
+    display: block;
+    padding: 0;
+    margin-left: 0;
+    text-decoration: none;
+    margin-left: 5px;
+    a.css-link {
+      /* text-shadow: 2px 2px 2px #000; */
+      font-weight: bold;
+      color: #4e7d0e;
+      margin: 3px;
+      padding: 3px;
+      border-radius: 3px;
+    }
+    a.css-link:hover {
+      color: #7db72f;
+    }
+  }
+}
+
+#css-delete-notice {
+  color: #414141;
+  background-color: yellow;
+  margin: auto;
+  width: 300px;
+  text-align: center;
+  border: 2px dashed red;
+  padding: 3px;
+}
+
+.css-center {
+  text-align: center;
+}
+
+#css-content {
+  margin: 0 auto;
+  .css-draw-attention {
+    font-weight: bold;
+  }
+}
+
+.css-interactive {
+  color: #414141;
+  background-color: ghostwhite;
+  background-image: url('images/felt.png');
+}
+.css-drop {
+  .css-short {
+    height: 20px;
+  }
+  .css-tall {
+    min-height: 200px;
+  }
+  .css-area {
+    width: 200px;
+    margin: 20px;
+    padding: 20px;
+    border-radius: 5px;
+    border: 3px dashed #C11B17;
+  }
+  .css-drop-container {
+    float: left;
+    .css-file-zone {
+      cursor: pointer;
+    }
+  }
+  .css-share-container {
+    background:#123456;
+    .css-tall.css-area.css-interactive {
+      overflow: visible;
+    }
+    float: left;
+    .css-id {
+      display: none;
+    }
+    .css-area {
+      width: 260px;
+    }
+  }
+}
+
+.css-draggable {
+  width: 20px;
+  height: 20px;
+  margin: 20px;
+  background-color: #fce;
+  padding: 20px;
+  border: 2px dashed #efc;
+  border-radius: 5px;
+  cursor: move;
+}
+  /* 
+    This snippet was stolen from min.us 
+    It looks like it gets the cursor icon to be
+    styleable in firefox
+  */
+.css-filechooser {
+  background-color: white;
+  position: absolute;
+  /* TODO fix margins and such*/
+  opacity: 0;
+  /* */
+  top: -1000px;
+  left: -1000px;
+  /* */
+  z-index: 1000000;
+  margin: -10px 0pt 0pt -179px;
+  height: 30px;
+  margin: -10px 0pt 0pt -179px;
+  cursor: pointer;
+}
+
+.css-tabs li {
+  background:#333;
+  display: inline-block;
+  margin:0px;
+  padding:0px;
+}
+.css-thumbnail-container{
+	display:inline-block;
+	font-family:arial;
+	background:#fff;
+	height:auto;
+	width:auto;
+	padding:0px;
+	margin:10px;
+	border:solid 1px #999;
+	border-radius:5px;
+}
+.css-thumbnail-container:hover{
+	color:#fff;
+	border:solid 1px #666;
+}
+.css-thumbnail{
+	img {
+		max-width:200px;
+		max-height:200px;
+	}
+	background:#000;
+	height:200px;
+	width:200px;
+	margin:0px;
+	margin-left:auto;
+	margin-right:auto;
+	margin:10px;
+}
+.css-thumbnail-description-info{
+	background:#f2f2f2;	
+	width:200px;
+	margin-left:auto;
+	margin-right:auto;
+    padding: 0px 10px 10px 10px;
+}
+.css-thumbnail-title{
+	color:#444;
+	font-size:16px;
+    margin-top:10px;
+    padding-top:5px;
+}
+.css-author{
+	color:#098776;
+	font-size:12px;
+    margin-top:5px;
+}
+.css-thumbnail-description{
+	font-size:14px;
+	color:#666;
+    margin-top:5px;
+    height:30px;
+    width:200px;
+	white-space:nowrap;
+	width:100%;
+	overflow:hidden;
+	text-overflow:ellipsis;
+}
+#css-foot-tabs{
+  background:red;
+  height:50px;
+  width:auto;
+}

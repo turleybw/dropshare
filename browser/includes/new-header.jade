@@ -1,20 +1,36 @@
-.header-wrapper
-  .header-content
-    .header-top
-      .phone
-        |@brian_turley
+.css-header-wrapper
+  .css-header-content
+    .css-header-top
+      .css-contact
+        @brian_turley
       div(style='clear: both;')    
     .header-bottom
       #logo
-      .nav
-         .row
-         ul#css-main-tabs.css-tabs
-           li.js-tab.js-gallery
-             a(href='#/gallery')
-               span.tab Gallery
-           li.js-tab.js-download
-             a(href='#/download')
-               span.tab download    
+      .css-nav
+         ul.css-row
+              li.js-tab.js-gallery.css-tab
+                a(href='#/gallery')
+                  span.tab Gallery
+              li.js-tab.js-upload.css-tab
+                a(href='#/upload')
+                  span.tab Upload    
+              li.js-tab.js-download.css-tab
+                a(href='#/download')
+                  span.tab Download
+                  
+                  
+                  
+                  
+            //  
+              a.tab(href='http://google.com')|Kits
+              a.tab(href='http://google.com')|Products
+              a.tab(href='http://google.com')|Support
+              a.tab(href='http://google.com')|Contact Us 
+              a.tab(href='http://google.com')|Press
+         div(style='clear: both;')
+//
+         ul.css-tabs
+
            li.js-tab.js-index.js-drop
              a(href='#/drop')
                span.tab Dropshare
