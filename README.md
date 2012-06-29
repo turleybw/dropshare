@@ -1,7 +1,7 @@
 Dropshare
 ===
 node bin/dropshare-server.js
-./deploy.sh
+node deploy
 
 
 [DropShare](http://dropsha.re) is the answer to the age-old question of File Transfer:
